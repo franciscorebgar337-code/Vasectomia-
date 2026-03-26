@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro Jornada de Vasectomía Sin Bisturí — IMSS BIENESTAR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+  :root {
+    --verde: #006847;
+    --verde-claro: #008f5d;
+    --verde-suave: #e8f4ef;
+    --rojo: #c0392b;
+    --dorado: #c8973a;
+    --blanco: #f9faf8;
+    --gris-claro: #eef0ed;
+    --gris-medio: #9aaa96;
+    --gris-texto: #3a3f35;
+    --borde: #cad5c5;
+    --sombra: 0 2px 16px rgba(0,100,60,0.09);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #f0f4f0;
+    color: var(--gris-texto);
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+  }
+
+  /* HEADER */
+  .header-banner {
+    background: linear-gradient(135deg, #004d35 0%, #006847 50%, #008f5d 100%);
+    color: white;
+    padding: 36px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .logos-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .logo-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-title {
+    font-family: 'Lora', serif;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .header-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  /* CONTENEDOR PRINCIPAL */
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* CARD DE BIENVENIDA */
+  .welcome-card {
+    background: white;
+    border-radius: 0 0 12px 12px;
+    border-top: 4px solid var(--dorado);
+    padding: 28px 28px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--sombra);
+  }
+  .welcome-title {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--verde);
+    margin-bottom: 12px;
+  }
+  .welcome-text {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 18px;
+  }
+  .instrucciones-grid {
+    display: grid;
+    gap: 8px;
+  }
+  .instruccion-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--verde-suave);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    border-left: 3px solid var(--verde-claro);
+  }
+  .instruccion-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TARJETA DE SECCIÓN */
+  .section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 14px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--borde);
+    animation: fadeUp 0.3s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gris-claro);
+  }
+  .section-number {
+    background: var(--verde);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--verde);
+  }
+
+  /* CAMPOS */
+  .fields-grid {
+    display: grid;
+    gap: 16px;
+  }
+  .fields-row-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fields-row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @media (max-width: 520px) {
+    .fields-row-2, .fields-row-3 { grid-template-columns: 1fr; }
+    .section-card { padding: 18px 16px; }
+    .welcome-card { padding: 20px 16px; }
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gris-texto);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .required-star { color: var(--rojo); font-size: 14px; }
+  .field-hint { font-size: 11px; color: var(--gris-medio); margin-top: 1px; }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--borde);
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--gris-texto);
+    background: var(--blanco);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(0,143,93,0.12);
+    background: white;
+  }
+  input::placeholder { color: #bbc5b7; }
+  select { cursor: pointer; }
+
+  /* CURP ESPECIAL */
+  #curp { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .curp-counter {
+    text-align: right;
+    font-size: 11px;
+    color: var(--gris-medio);
+    margin-top: 2px;
+  }
+  .curp-counter.complete { color: var(--verde); font-weight: 600; }
+  .curp-counter.error { color: var(--rojo); }
+
+  /* LOCALIDAD CONDICIONAL */
+  .localidad-section {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--borde);
+    animation: fadeUp 0.25s ease both;
+  }
+  .localidad-section.visible { display: block; }
+
+  /* BOTÓN SUBMIT */
+  .submit-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--borde);
+    text-align: center;
+  }
+  .submit-btn {
+    background: linear-gradient(135deg, #004d35, #006847);
+    color: white;
+    border: none;
+    padding: 15px 48px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Source Sans 3', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    box-shadow: 0 4px 14px rgba(0,104,71,0.35);
+  }
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,104,71,0.4);
+    background: linear-gradient(135deg, #005c40, #007a56);
+  }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--gris-medio);
+  }
+
+  /* MODAL DE ÉXITO */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,40,20,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .success-overlay.show { display: flex; }
+  .success-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 40px 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+    border-top: 5px solid var(--verde);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .success-icon { font-size: 56px; margin-bottom: 16px; }
+  .success-title {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--verde);
+    margin-bottom: 12px;
+  }
+  .success-text {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .success-steps {
+    background: var(--verde-suave);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .success-step {
+    display: flex; gap: 10px; font-size: 13px;
+    line-height: 1.5; margin-bottom: 8px;
+  }
+  .success-step:last-child { margin-bottom: 0; }
+  .step-num {
+    background: var(--verde);
+    color: white;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .success-close {
+    background: var(--verde);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Source Sans 3', sans-serif;
+    cursor: pointer;
+  }
+
+  /* ═══ NUEVA SECCIÓN INFORMATIVA ══════════════════════════════ */
+  .info-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,80,40,0.13);
+    margin-bottom: 32px;
+    border: 1px solid var(--borde);
+  }
+
+  /* Banner superior con navegación */
+  .info-top-banner {
+    background: linear-gradient(135deg, #003d28 0%, #005a3a 50%, #007a50 100%);
+    padding: 28px 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-top-banner::before {
+    content:'';position:absolute;top:-50px;right:-50px;
+    width:200px;height:200px;border-radius:50%;
+    background:rgba(255,255,255,0.04);
+  }
+  .info-top-inner { position: relative; z-index: 1; }
+  .info-top-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .info-top-title {
+    font-family: 'Lora', serif;
+    font-size: clamp(18px,3.5vw,24px);
+    font-weight: 700;
+    color: white;
+    margin: 0 0 4px;
+  }
+  .info-top-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    margin: 0 0 20px;
+  }
+
+  /* Pills de navegación */
+  .info-nav-pills {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .info-nav-pills::-webkit-scrollbar { display: none; }
+  .pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.75);
+    border-radius: 14px 14px 0 0;
+    padding: 14px 18px 18px;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    min-width: 90px;
+  }
+  .pill-icon { font-size: 26px; }
+  .pill-label { font-size: 12px; }
+  .pill:hover { background: rgba(255,255,255,0.18); color: white; }
+  .pill.active {
+    background: white;
+    color: var(--verde);
+    font-weight: 800;
+    border-bottom-color: white;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Cuerpo del contenido */
+  .info-body { background: white; padding: 24px; }
+  .iTab { display: none; animation: fadeUp 0.25s ease both; }
+  .iTab.active { display: block; }
+
+  /* QUICK STATS */
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:480px){ .quick-stats { grid-template-columns: repeat(2,1fr); } }
+  .qs-item {
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .qs-green { background:#e8f4ef; }
+  .qs-teal  { background:#e3f5f0; }
+  .qs-blue  { background:#e8f0fb; }
+  .qs-amber { background:#fdf6e3; }
+  .qs-num {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--verde);
+    line-height: 1.1;
+  }
+  .qs-item.qs-blue .qs-num  { color:#2a7fc1; }
+  .qs-item.qs-amber .qs-num { color:#b07d10; }
+  .qs-label { font-size: 11px; color: #666; margin-top: 3px; }
+
+  /* PROC GRID */
+  .proc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .proc-card {
+    border-radius: 12px;
+    border: 1px solid var(--borde);
+    border-top: 4px solid var(--accent);
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .proc-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,80,40,0.1); }
+  .proc-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .proc-icon { font-size:22px; }
+  .proc-tag { font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; letter-spacing:0.04em; }
+  .proc-card-title { font-weight:700; font-size:14px; color:var(--gris-texto); margin-bottom:6px; }
+  .proc-card-text { font-size:12.5px; color:#555; line-height:1.6; }
+
+  /* CHECKLIST */
+  .checklist-box {
+    background: #f8fdf9;
+    border: 1px solid #c8e6d5;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .checklist-title { font-weight:700; font-size:14px; color:var(--verde); margin-bottom:14px; }
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+    gap: 10px;
+  }
+  .chk-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    border: 1px solid #d8eee3;
+  }
+  .chk-ico { font-size: 16px; flex-shrink:0; }
+
+  /* RECUPERACIÓN TIMELINE */
+  .recup-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f0faf5;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: #2a4a35;
+    margin-bottom: 22px;
+    border-left: 4px solid var(--verde);
+    line-height: 1.55;
+  }
+  .recup-timeline { display:flex; flex-direction:column; gap:0; }
+  .rt-item { display:flex; gap:14px; padding-bottom:18px; }
+  .rt-item:last-child { padding-bottom:0; }
+  .rt-marker { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+  .rt-circle {
+    width:36px; height:36px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; flex-shrink:0;
+    box-shadow: 0 2px 8px rgba(0,80,40,0.2);
+  }
+  .rt-line { flex:1; width:2px; background:linear-gradient(to bottom,#c8e6d5,#f0f8f4); min-height:18px; margin-top:4px; }
+  .rt-content { flex:1; padding-top:6px; }
+  .rt-badge { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; margin-bottom:6px; }
+  .rt-title { font-weight:700; font-size:14px; color:var(--gris-texto); margin-bottom:8px; }
+  .rt-items { display:flex; flex-direction:column; gap:5px; margin-bottom:8px; }
+  .rt-do, .rt-dont { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; line-height:1.5; }
+  .rt-do { color:#1a5c35; }
+  .rt-dont { color:#8a2020; }
+  .rt-note { font-size:11.5px; color:#888; font-style:italic; background:#f8f8f8; padding:7px 10px; border-radius:7px; }
+  .alerta-amarilla {
+    background:#fff8e1; border:1px solid #ffd54f; border-radius:10px;
+    padding:14px 16px; font-size:13px; color:#795500; line-height:1.6; margin-top:16px;
+  }
+
+  /* DOLOR */
+  .pain-scale-box {
+    background:#f8fdf9; border:1px solid #c8e6d5; border-radius:12px;
+    padding:18px; margin-bottom:18px;
+  }
+  .ps-title { font-weight:700; font-size:13.5px; color:var(--verde); margin-bottom:14px; }
+  .ps-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .ps-label { font-size:12px; color:#555; width:200px; flex-shrink:0; }
+  .ps-bar-wrap { flex:1; background:#e8e8e8; border-radius:20px; height:18px; position:relative; overflow:visible; }
+  .ps-bar { height:100%; border-radius:20px; transition:width 1s ease; }
+  .ps-num { font-size:12px; font-weight:700; color:var(--verde); width:45px; flex-shrink:0; }
+  .ps-scale-nums { display:flex; justify-content:space-between; font-size:10px; color:#aaa; padding:0 0; margin-top:6px; }
+  .ps-legend { font-size:11px; color:#888; margin-top:4px; }
+
+  .dolor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .dolor-card { border-radius:12px; padding:16px; border:1px solid var(--borde); }
+  .dolor-card.azul  { background:#eef5fb; border-color:#bad3ee; }
+  .dolor-card.verde { background:#edf7f2; border-color:#b8ddc9; }
+  .dolor-card.rojo  { background:#fdf0ef; border-color:#f0c0bc; }
+  .dolor-card-head { display:flex; gap:8px; align-items:center; font-weight:700; font-size:13px; color:var(--gris-texto); margin-bottom:10px; }
+  .dolor-card p { font-size:12.5px; color:#444; line-height:1.6; margin:0; }
+  .analg-list { display:flex; flex-direction:column; gap:7px; }
+  .analg-row { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; }
+  .analg-num {
+    background:var(--verde); color:white; width:20px; height:20px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:700; flex-shrink:0;
+  }
+  .alarma-list { display:flex; flex-direction:column; gap:6px; }
+  .alarma-item { display:flex; gap:8px; font-size:12.5px; color:#7a1010; align-items:flex-start; }
+  .sexual-box {
+    display:flex; gap:14px; align-items:flex-start;
+    background:#e8f4ef; border-radius:10px; padding:14px 16px;
+    font-size:13px; color:#1a4a28; line-height:1.6; border-left:4px solid var(--verde);
+  }
+
+  /* MITOS FLIP CARDS */
+  .mitos-intro {
+    display:flex; gap:12px; align-items:flex-start;
+    background:#f8f0ff; border-radius:10px; padding:14px 16px;
+    font-size:13px; color:#4a2a6a; margin-bottom:18px;
+    border-left:4px solid #9c56d4; line-height:1.55;
+  }
+  .mitos-flip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+    gap: 14px;
+  }
+  .flip-card { height:170px; perspective:1000px; cursor:pointer; }
+  .flip-inner {
+    width:100%; height:100%;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1);
+    position:relative;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position:absolute; inset:0;
+    border-radius:12px;
+    padding:16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display:flex; flex-direction:column; gap:8px; justify-content:center;
+  }
+  .flip-front {
+    background:#fff5f5; border:1.5px solid #f0c0c0;
+    color:#7a1010;
+  }
+  .flip-back {
+    background:#edf7f2; border:1.5px solid #b8ddc9;
+    color:#1a4a28;
+    transform: rotateY(180deg);
+  }
+  .flip-tag { font-size:10.5px; font-weight:700; padding:3px 10px; border-radius:20px; display:inline-block; width:fit-content; }
+  .mito-tag-f { background:#fde8e8; color:#b02020; }
+  .real-tag-f { background:#d4f0e2; color:#1a6a38; }
+  .flip-text { font-size:12.5px; line-height:1.55; font-style:italic; }
+  .flip-hint { font-size:10.5px; opacity:0.6; margin-top:auto; text-align:right; }
+
+  /* BENEFICIOS */
+  .benef-intro {
+    background:#e8f4ef; border-left:4px solid var(--verde);
+    border-radius:10px; padding:13px 16px;
+    font-size:13px; color:#1a4a28; margin-bottom:18px; line-height:1.55;
+  }
+  .benef-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+    gap: 12px;
+  }
+  .benef-card {
+    border-radius:12px;
+    border:1px solid #ddd;
+    border-top:4px solid var(--bc);
+    background: var(--bl);
+    padding:16px 12px;
+    text-align:center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .benef-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,80,40,0.12); }
+  .benef-icon { font-size:26px; margin-bottom:6px; }
+  .benef-stat { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--bc); line-height:1.1; }
+  .benef-name { font-weight:700; font-size:12px; color:#333; margin:4px 0 7px; }
+  .benef-desc { font-size:11.5px; color:#555; line-height:1.5; }
+
+  @media(max-width:520px){
+    .proc-grid, .checklist-grid, .dolor-grid,
+    .mitos-flip-grid, .benef-grid { grid-template-columns:1fr; }
+    .quick-stats { grid-template-columns: repeat(2,1fr); }
+    .ps-label { width:130px; font-size:11px; }
+    .pill { min-width:58px; padding:8px 10px 12px; }
+    .pill-label { font-size:10px; }
+    .info-body { padding:16px; }
+  }
+
+  /* ── FIN NUEVA SECCIÓN ── */
+
+  input.invalid, select.invalid {
+    border-color: var(--rojo);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+  }
+  .field-error {
+    font-size: 11px;
+    color: var(--rojo);
+    margin-top: 3px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  /* INDICADOR DE PROGRESO */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.2);
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--dorado);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 4px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header-banner">
+  <div class="logos-row">
+    <span class="logo-badge">IMSS BIENESTAR</span>
+    <span class="logo-badge">SSA · Estado de México</span>
+  </div>
+  <div class="header-title">Registro para Jornada de<br>Vasectomía Sin Bisturí</div>
+  <div class="header-subtitle">Centro de Salud Santa María Pipioltepec · Jurisdicción Sanitaria Valle de Bravo</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Complete el formulario para registrarse</div>
+</div>
+
+<div class="form-container">
+
+  <!-- BIENVENIDA -->
+  <div class="welcome-card">
+    <div class="welcome-title">¡Bienvenido!</div>
+    <div class="welcome-text">
+      Has tomado una decisión importante para la planificación familiar. Este formulario tiene como objetivo
+      agendar tu cita y recopilar la información necesaria para brindarte una atención segura y de calidad.
+      Por favor, lee con atención las siguientes instrucciones de preparación para el día de tu procedimiento:
+    </div>
+    <div class="instrucciones-grid">
+      <div class="instruccion-item"><span class="instruccion-icon">🚿</span><span><strong>Higiene:</strong> Preséntate bien bañado y con la zona escrotal rasurada.</span></div>
+      <div class="instruccion-item"><span class="instruccion-icon">👕</span><span><strong>Vestimenta:</strong> Trae ropa interior cómoda y ajustada (tipo trusa) para soporte postprocedimiento.</span></div>
+      <div class="instruccion-item"><span class="instruccion-icon">🍳</span><span><strong>Alimentación:</strong> Puedes tomar un desayuno ligero. No es necesario ayuno prolongado.</span></div>
+      <div class="instruccion-item"><span class="instruccion-icon">👥</span><span><strong>Acompañante:</strong> De ser posible, acude acompañado para tu regreso a casa.</span></div>
+      <div class="instruccion-item"><span class="instruccion-icon">📄</span><span><strong>Documentación:</strong> Trae una copia impresa de tu CURP el día de la cita.</span></div>
+    </div>
+  </div>
+
+    <!-- NOTA PRESENCIAL -->
+  <div style="background:#fff8e1;border:2px solid #f59e0b;border-radius:12px;padding:14px 18px;
+              margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;">
+    <span style="font-size:22px;flex-shrink:0;">ℹ️</span>
+    <div style="font-size:13px;color:#78350f;line-height:1.65;">
+      <strong>¿Problemas para registrarte en línea?</strong><br>
+      Si no puedes generar tu cita a través de este formulario, puedes acudir personalmente al
+      <strong>Centro de Salud Santa María Pipioltepec</strong>, donde el personal de salud te orientará y registrará directamente.
+    </div>
+  </div>
+
+  <form id="mainForm" novalidate>
+
+    <!-- SECCIÓN 1: DATOS PERSONALES -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div class="section-title">Datos Personales</div>
+      </div>
+      <div class="fields-grid fields-row-3">
+        <div class="field-group">
+          <label class="field-label" for="nombre">Nombre(s) <span class="required-star">*</span></label>
+          <input type="text" id="nombre" placeholder="Ej. Juan Carlos" autocomplete="given-name" required>
+          <div class="field-error" id="err-nombre">Este campo es obligatorio.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="apPat">Apellido Paterno <span class="required-star">*</span></label>
+          <input type="text" id="apPat" placeholder="Ej. García" autocomplete="family-name" required>
+          <div class="field-error" id="err-apPat">Este campo es obligatorio.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="apMat">Apellido Materno <span class="required-star">*</span></label>
+          <input type="text" id="apMat" placeholder="Ej. López" required>
+          <div class="field-error" id="err-apMat">Este campo es obligatorio.</div>
+        </div>
+      </div>
+
+      <div class="fields-grid fields-row-2" style="margin-top:16px">
+        <div class="field-group">
+          <label class="field-label" for="edad">Edad <span class="required-star">*</span></label>
+          <input type="number" id="edad" placeholder="Ej. 35" min="18" max="99" required>
+          <span class="field-hint">Entre 18 y 99 años</span>
+          <div class="field-error" id="err-edad">Ingresa una edad válida (18–99).</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="fechaNac">Fecha de Nacimiento <span class="required-star">*</span></label>
+          <input type="date" id="fechaNac" required>
+          <div class="field-error" id="err-fechaNac">Este campo es obligatorio.</div>
+        </div>
+      </div>
+
+      <div class="fields-grid" style="margin-top:16px">
+        <div class="field-group">
+          <label class="field-label" for="curp">Clave CURP <span class="required-star">*</span></label>
+          <input type="text" id="curp" placeholder="GARJ850312HMCRCN01" maxlength="18" required autocomplete="off">
+          <div class="curp-counter" id="curpCounter">0 / 18 caracteres</div>
+          <div class="field-error" id="err-curp">La CURP debe tener exactamente 18 caracteres.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: DOMICILIO -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-title">Domicilio</div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label class="field-label" for="calle">Calle y Número <span style="font-weight:400;color:var(--gris-medio)">(referencia del domicilio)</span> <span class="required-star">*</span></label>
+          <input type="text" id="calle" placeholder="Ej. Av. Independencia No. 12, frente a la cancha" required>
+          <div class="field-error" id="err-calle">Este campo es obligatorio.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="colonia">Colonia o Barrio <span class="required-star">*</span></label>
+          <input type="text" id="colonia" placeholder="Ej. Barrio de la Peña" required>
+          <div class="field-error" id="err-colonia">Este campo es obligatorio.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: UBICACIÓN GEOGRÁFICA -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-title">Ubicación Geográfica</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="municipio">Municipio <span class="required-star">*</span></label>
+        <select id="municipio" required onchange="showLocalidades()">
+          <option value="">— Selecciona tu municipio —</option>
+          <option value="valle">Valle de Bravo</option>
+          <option value="donato">Donato Guerra</option>
+          <option value="amanalco">Amanalco</option>
+        </select>
+        <div class="field-error" id="err-municipio">Selecciona un municipio.</div>
+      </div>
+
+      <!-- LOCALIDADES VALLE DE BRAVO · Fuente: SEPOMEX/Correos de México, actualizado marzo 2023 -->
+      <div class="localidad-section" id="loc-valle">
+        <div class="fields-grid fields-row-2" style="margin-top:4px">
+          <div class="field-group">
+            <label class="field-label" for="locValle">Localidad — Valle de Bravo <span class="required-star">*</span></label>
+            <select id="locValle" onchange="autoCP('locValle','cpField')">
+              <option value="">— Selecciona tu localidad —</option>
+              <option data-cp="51200">Valle de Bravo (Cabecera Municipal)</option>
+              <option data-cp="51200">Avándaro</option>
+              <option data-cp="51200">Los Saúcos</option>
+              <option data-cp="51200">Santa María Ahuacatlán</option>
+              <option data-cp="51200">Agua Fría</option>
+              <option data-cp="51200">Barranca Seca</option>
+              <option data-cp="51200">La Capilla</option>
+              <option data-cp="51200">La Peña</option>
+              <option data-cp="51200">Loma Bonita (Valle de Bravo)</option>
+              <option data-cp="51200">Emiliano Zapata</option>
+              <option data-cp="51200">Manguito</option>
+              <option data-cp="51200">Rincón Villa del Valle</option>
+              <option data-cp="51200">San Antonio (Valle de Bravo)</option>
+              <option data-cp="51200">Sánchez</option>
+              <option data-cp="51204">Barrio de Guadalupe</option>
+              <option data-cp="51204">Otumba</option>
+              <option data-cp="51206">El Cerrillo</option>
+              <option data-cp="51207">Tres Puentes</option>
+              <option data-cp="51207">Rincón de Estradas</option>
+              <option data-cp="51208">La Candelaria</option>
+              <option data-cp="51209">Santa María Pipioltepec</option>
+              <option data-cp="51210">Santa Teresa Tiloxtoc</option>
+              <option data-cp="51217">El Arco</option>
+              <option data-cp="51217">San Gaspar</option>
+              <option data-cp="51218">Santa Magdalena Tiloxtoc</option>
+              <option data-cp="51219">San Gabriel Ixtla</option>
+              <option data-cp="51220">Cerro Colorado</option>
+              <option data-cp="51225">Cuadrilla de Dolores</option>
+              <option data-cp="51226">Casas Viejas</option>
+              <option data-cp="51226">Escalerillas</option>
+              <option data-cp="51226">La Volanta</option>
+              <option data-cp="51226">Valle Escondido</option>
+              <option data-cp="51227">Peña Blanca</option>
+              <option data-cp="51229">Mesa de Jaimes</option>
+              <option data-cp="51229">Monte Alto</option>
+              <option data-cp="51230">Colorines</option>
+              <option data-cp="51230">San Juan Atezcapan</option>
+              <option data-cp="51230">San Nicolás Tolentino</option>
+              <option data-cp="51230">El Durazno</option>
+              <option data-cp="51230">El Polvorín</option>
+              <option data-cp="51237">El Manzano</option>
+              <option data-cp="51238">Los Pozos (Pinar de Osorios)</option>
+              <option data-cp="51238">Mesa Rica</option>
+              <option data-cp="51238">San José Potrerillos</option>
+              <option data-cp="51239">Cerro Gordo</option>
+              <option data-cp="51240">San Simón el Alto</option>
+              <option data-cp="51245">Godínez (Tehuastepec)</option>
+              <option data-cp="51246">Mesa de Dolores (Mesa del Rayo)</option>
+              <option data-cp="51246">Atesquelites</option>
+              <option data-cp="51247">Santo Tomás el Pedregal</option>
+              <option data-cp="51247">La Laguna</option>
+              <option data-cp="51247">Tierra Grande (La Loma)</option>
+              <option data-cp="51248">El Fresno</option>
+              <option data-cp="51248">Tenantongo</option>
+            </select>
+            <div class="field-error" id="err-locValle">Selecciona tu localidad.</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cpField">Código Postal <span class="field-hint" style="font-weight:400">(se autorrellena)</span></label>
+            <input type="text" id="cpField" placeholder="—" maxlength="5" readonly style="background:#f4f8f4;color:var(--verde);font-weight:700;letter-spacing:0.1em;">
+            <span class="field-hint">📮 Fuente: SEPOMEX · Correos de México</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCALIDADES DONATO GUERRA · Fuente: SEPOMEX, actualizado febrero 2026 -->
+      <div class="localidad-section" id="loc-donato">
+        <div class="fields-grid fields-row-2" style="margin-top:4px">
+          <div class="field-group">
+            <label class="field-label" for="locDonato">Localidad — Donato Guerra <span class="required-star">*</span></label>
+            <select id="locDonato" onchange="autoCP('locDonato','cpField')">
+              <option value="">— Selecciona tu localidad —</option>
+              <option data-cp="51030">Villa Donato Guerra (Cabecera Municipal)</option>
+              <option data-cp="51030">Cabecera de Indígenas Primer Cuartel</option>
+              <option data-cp="51030">Cabecera de Indígenas Segundo Cuartel</option>
+              <option data-cp="51030">San Agustín de las Palmas</option>
+              <option data-cp="51034">San Lucas Texcaltitlán</option>
+              <option data-cp="51035">San Lucas Texcaltitlán (Sabanillas)</option>
+              <option data-cp="51035">Santiago Huitlapaltepec</option>
+              <option data-cp="51036">San José Tilostoc</option>
+              <option data-cp="51040">San Simón de la Laguna</option>
+              <option data-cp="51043">San Antonio de la Laguna</option>
+              <option data-cp="51044">Puerto de la Cruz</option>
+              <option data-cp="51044">San Antonio Hidalgo</option>
+              <option data-cp="51044">San Martín Obispo</option>
+              <option data-cp="51045">Batán Chico</option>
+              <option data-cp="51045">Batán Grande</option>
+              <option data-cp="51046">San Francisco Mihualtepec</option>
+              <option data-cp="51046">San Miguel Xooltepec</option>
+              <option data-cp="51050">San Juan Xoconusco</option>
+              <option data-cp="51050">De Arriba de San Juan Xoconusco</option>
+              <option data-cp="51054">Mesas Altas de Xoconusco</option>
+              <option data-cp="51055">El Capulín</option>
+              <option data-cp="51055">Hacienda las Galeras</option>
+              <option data-cp="51055">La Fundición</option>
+              <option data-cp="51055">Llano Redondo de Zaragoza</option>
+              <option data-cp="51055">Macheros</option>
+            </select>
+            <div class="field-error" id="err-locDonato">Selecciona tu localidad.</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cpField">Código Postal <span class="field-hint" style="font-weight:400">(se autorrellena)</span></label>
+            <input type="text" id="cpField" placeholder="—" maxlength="5" readonly style="background:#f4f8f4;color:var(--verde);font-weight:700;letter-spacing:0.1em;">
+            <span class="field-hint">📮 Fuente: SEPOMEX · Correos de México</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCALIDADES AMANALCO · Fuente: SEPOMEX/INEGI 2024 -->
+      <div class="localidad-section" id="loc-amanalco">
+        <div class="fields-grid fields-row-2" style="margin-top:4px">
+          <div class="field-group">
+            <label class="field-label" for="locAmanalco">Localidad — Amanalco <span class="required-star">*</span></label>
+            <select id="locAmanalco" onchange="autoCP('locAmanalco','cpField')">
+              <option value="">— Selecciona tu localidad —</option>
+              <option data-cp="51260">Amanalco de Becerra (Cabecera Municipal)</option>
+              <option data-cp="51260">San Jerónimo</option>
+              <option data-cp="51260">San Jerónimo Primera Sección (El Convento)</option>
+              <option data-cp="51260">San Juan</option>
+              <option data-cp="51265">San Lucas</option>
+              <option data-cp="51265">Rincón de Guadalupe</option>
+              <option data-cp="51266">Pueblo Nuevo</option>
+              <option data-cp="51266">Las Pilas</option>
+              <option data-cp="51266">San Mateo</option>
+              <option data-cp="51266">San Miguel (San Miguel Tenextepec)</option>
+              <option data-cp="51266">San Sebastián el Chico</option>
+              <option data-cp="51267">San Mateo Quinta Sección (La Providencia)</option>
+              <option data-cp="51267">San Sebastián el Grande</option>
+              <option data-cp="51268">San Bartolo</option>
+              <option data-cp="51268">Polvillos (San Bartolo Quinta Sección)</option>
+              <option data-cp="51270">El Ancón</option>
+              <option data-cp="51270">El Temporal</option>
+              <option data-cp="51273">Capilla Vieja</option>
+              <option data-cp="51273">Ojo de Agua</option>
+              <option data-cp="51274">Corral de Piedra</option>
+              <option data-cp="51280">Agua Bendita</option>
+              <option data-cp="51280">El Capulín Primera Sección</option>
+              <option data-cp="51280">El Capulín Segunda Sección</option>
+              <option data-cp="51280">El Capulín Tercera Sección (Palo Mancornado)</option>
+              <option data-cp="51280">Huacal Viejo</option>
+              <option data-cp="51285">El Potrero</option>
+              <option data-cp="51285">El Potrero Segunda Sección</option>
+              <option data-cp="51287">El Pedregal</option>
+              <option data-cp="51287">El Zacatonal</option>
+              <option data-cp="51287">Hacienda Nueva</option>
+              <option data-cp="51287">San Lucas Cuarta Sección (San Francisco)</option>
+            </select>
+            <div class="field-error" id="err-locAmanalco">Selecciona tu localidad.</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cpField">Código Postal <span class="field-hint" style="font-weight:400">(se autorrellena)</span></label>
+            <input type="text" id="cpField" placeholder="—" maxlength="5" readonly style="background:#f4f8f4;color:var(--verde);font-weight:700;letter-spacing:0.1em;">
+            <span class="field-hint">📮 Fuente: SEPOMEX · Correos de México</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: CONTACTO -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-title">Datos de Contacto</div>
+      </div>
+      <div class="fields-grid fields-row-2">
+        <div class="field-group">
+          <label class="field-label" for="tel1">Número de Teléfono 1 <span class="required-star">*</span></label>
+          <input type="tel" id="tel1" placeholder="722 000 0000" maxlength="15" required>
+          <span class="field-hint">Número principal de contacto</span>
+          <div class="field-error" id="err-tel1">Ingresa un número de teléfono válido.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="tel2">Número de Teléfono 2</label>
+          <input type="tel" id="tel2" placeholder="722 000 0000 (opcional)" maxlength="15">
+          <span class="field-hint">Número alternativo (opcional)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENVÍO -->
+    <div class="submit-section">
+      <button type="submit" class="submit-btn">✅ &nbsp;Enviar Registro</button>
+      <div class="submit-note">
+        Todos los campos marcados con <strong style="color:var(--rojo)">*</strong> son obligatorios.<br>
+        Tus datos serán manejados con confidencialidad conforme a la Ley General de Salud.
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- SECCIÓN INFORMATIVA REDISEÑADA -->
+<div class="form-container" style="margin-top:8px; max-width:780px;">
+  <div class="info-wrapper">
+
+    <!-- ENCABEZADO -->
+    <div class="info-top-banner">
+      <div class="info-top-inner">
+        <div class="info-top-badge">📋 Guía del Paciente</div>
+        <h2 class="info-top-title">Vasectomía Sin Bisturí</h2>
+        <p class="info-top-sub">Información basada en evidencia científica · OMS · NOM-005-SSA2</p>
+        <div class="info-nav-pills">
+          <button class="pill active" data-tab="procedimiento" onclick="switchTab('procedimiento',this)">
+            <span class="pill-icon">⚕️</span><span class="pill-label">Procedimiento</span>
+          </button>
+          <button class="pill" data-tab="recuperacion" onclick="switchTab('recuperacion',this)">
+            <span class="pill-icon">🗓️</span><span class="pill-label">Recuperación</span>
+          </button>
+          <button class="pill" data-tab="dolor" onclick="switchTab('dolor',this)">
+            <span class="pill-icon">💊</span><span class="pill-label">Dolor</span>
+          </button>
+          <button class="pill" data-tab="mitos" onclick="switchTab('mitos',this)">
+            <span class="pill-icon">🧠</span><span class="pill-label">Mitos</span>
+          </button>
+          <button class="pill" data-tab="beneficios" onclick="switchTab('beneficios',this)">
+            <span class="pill-icon">✅</span><span class="pill-label">Beneficios</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO DE TABS -->
+    <div class="info-body">
+
+      <!-- ═══ PROCEDIMIENTO ═══ -->
+      <div class="iTab active" id="iTab-procedimiento">
+        <!-- STATS RÁPIDOS -->
+        <div class="quick-stats">
+          <div class="qs-item qs-green">
+            <div class="qs-num">15–30</div>
+            <div class="qs-label">minutos</div>
+          </div>
+          <div class="qs-item qs-teal">
+            <div class="qs-num">99.9%</div>
+            <div class="qs-label">efectividad</div>
+          </div>
+          <div class="qs-item qs-blue">
+            <div class="qs-num">0</div>
+            <div class="qs-label">hospitali­zación</div>
+          </div>
+          <div class="qs-item qs-amber">
+            <div class="qs-num">&lt;1%</div>
+            <div class="qs-label">complicaciones</div>
+          </div>
+        </div>
+
+        <!-- CARDS DE PROCEDIMIENTO -->
+        <div class="proc-grid">
+          <div class="proc-card" style="--accent:#006847">
+            <div class="proc-card-top">
+              <span class="proc-icon">🔬</span>
+              <span class="proc-tag" style="background:#e8f4ef;color:#006847">Definición</span>
+            </div>
+            <div class="proc-card-title">¿Qué es?</div>
+            <p class="proc-card-text">Método anticonceptivo masculino permanente. Una pequeña <strong>micropunción escrotal</strong> (sin cortes ni bisturí) para identificar, ligar y seccionar los conductos deferentes, impidiendo que los espermatozoides alcancen el semen.</p>
+          </div>
+          <div class="proc-card" style="--accent:#2a7fc1">
+            <div class="proc-card-top">
+              <span class="proc-icon">🩺</span>
+              <span class="proc-tag" style="background:#e8f0fb;color:#2a7fc1">Técnica</span>
+            </div>
+            <div class="proc-card-title">¿Cómo se hace?</div>
+            <p class="proc-card-text">Se usa una pinza especial <em>(Vas-ring clamp)</em> para fijar el conducto bajo la piel. Se hace la micropunción, se exterioriza, liga o cauteriza y se regresa. <strong>Sin puntos de sutura</strong> en la mayoría de casos.</p>
+          </div>
+          <div class="proc-card" style="--accent:#b07d10">
+            <div class="proc-card-top">
+              <span class="proc-icon">⚖️</span>
+              <span class="proc-tag" style="background:#fdf6e3;color:#b07d10">Comparativa</span>
+            </div>
+            <div class="proc-card-title">Sin bisturí vs. convencional</div>
+            <p class="proc-card-text">La técnica sin bisturí tiene <strong>menos sangrado, menos infecciones y menos dolor</strong>. Recuperación más rápida. Recomendada internacionalmente por asociaciones urológicas.</p>
+          </div>
+        </div>
+
+        <!-- CHECKLIST DE PREPARACIÓN -->
+        <div class="checklist-box">
+          <div class="checklist-title">📋 ¿Qué debes llevar el día de tu cita?</div>
+          <div class="checklist-grid">
+            <div class="chk-item"><span class="chk-ico">🪪</span><span>CURP impresa</span></div>
+            <div class="chk-item"><span class="chk-ico">🪪</span><span>Identificación oficial</span></div>
+            <div class="chk-item"><span class="chk-ico">👕</span><span>Ropa interior ajustada (trusa)</span></div>
+            <div class="chk-item"><span class="chk-ico">🪒</span><span>Zona escrotal rasurada</span></div>
+            <div class="chk-item"><span class="chk-ico">🍳</span><span>Desayuno ligero previo</span></div>
+            <div class="chk-item"><span class="chk-ico">👥</span><span>Acompañante (recomendable)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ RECUPERACIÓN ═══ -->
+      <div class="iTab" id="iTab-recuperacion">
+        <div class="recup-intro">
+          <span style="font-size:20px">🩹</span>
+          La mayoría de los pacientes retoman sus actividades normales en <strong>3–5 días</strong>. Sigue esta guía para una recuperación óptima.
+        </div>
+
+        <div class="recup-timeline">
+          <div class="rt-item">
+            <div class="rt-marker">
+              <div class="rt-circle" style="background:#006847">🏠</div>
+              <div class="rt-line"></div>
+            </div>
+            <div class="rt-content">
+              <div class="rt-badge" style="background:#e8f4ef;color:#006847">Día 1</div>
+              <div class="rt-title">Primeras 24 horas — Reposo total</div>
+              <div class="rt-items">
+                <div class="rt-do"><span>✅</span> Reposo en cama o sillón</div>
+                <div class="rt-do"><span>✅</span> Hielo en el escroto (20 min/hora, protegido con tela)</div>
+                <div class="rt-do"><span>✅</span> Ropa interior ajustada para soporte</div>
+                <div class="rt-dont"><span>❌</span> Esfuerzos físicos de ningún tipo</div>
+                <div class="rt-dont"><span>❌</span> Actividad sexual</div>
+              </div>
+              <div class="rt-note">Es normal: inflamación leve, moretón suave y sensación de peso escrotal.</div>
+            </div>
+          </div>
+
+          <div class="rt-item">
+            <div class="rt-marker">
+              <div class="rt-circle" style="background:#3a8f6a">🛋️</div>
+              <div class="rt-line"></div>
+            </div>
+            <div class="rt-content">
+              <div class="rt-badge" style="background:#eaf5ef;color:#3a8f6a">Días 2–3</div>
+              <div class="rt-title">Actividad ligera en casa</div>
+              <div class="rt-items">
+                <div class="rt-do"><span>✅</span> Trabajo sedentario (oficina, lectura, TV)</div>
+                <div class="rt-do"><span>✅</span> Seguir con ropa interior de soporte</div>
+                <div class="rt-dont"><span>❌</span> Levantar objetos pesados</div>
+                <div class="rt-dont"><span>❌</span> Caminatas largas</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rt-item">
+            <div class="rt-marker">
+              <div class="rt-circle" style="background:#5aaa84">🚶</div>
+              <div class="rt-line"></div>
+            </div>
+            <div class="rt-content">
+              <div class="rt-badge" style="background:#ecf6f1;color:#5aaa84">Días 4–7</div>
+              <div class="rt-title">Retorno gradual a actividades</div>
+              <div class="rt-items">
+                <div class="rt-do"><span>✅</span> Trabajo físico moderado</div>
+                <div class="rt-do"><span>✅</span> Caminatas y desplazamientos normales</div>
+                <div class="rt-dont"><span>❌</span> Actividad sexual (esperar hasta que no haya molestia)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rt-item">
+            <div class="rt-marker">
+              <div class="rt-circle" style="background:#7abfa0">💪</div>
+              <div class="rt-line"></div>
+            </div>
+            <div class="rt-content">
+              <div class="rt-badge" style="background:#eff8f4;color:#7abfa0">Semanas 2–4</div>
+              <div class="rt-title">Actividad completa</div>
+              <div class="rt-items">
+                <div class="rt-do"><span>✅</span> Ejercicio y deporte</div>
+                <div class="rt-do"><span>✅</span> Actividad sexual posible</div>
+                <div class="rt-dont"><span>❌</span> Sin otro método anticonceptivo todavía — usar condón hasta confirmar azoospermia</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rt-item" style="padding-bottom:0">
+            <div class="rt-marker">
+              <div class="rt-circle" style="background:#a0cfb8">🔬</div>
+            </div>
+            <div class="rt-content">
+              <div class="rt-badge" style="background:#f2fbf7;color:#4a9e7a">Semanas 8–12</div>
+              <div class="rt-title">Espermatograma de control</div>
+              <div class="rt-items">
+                <div class="rt-do"><span>✅</span> Confirmar azoospermia (ausencia de espermatozoides)</div>
+                <div class="rt-do"><span>✅</span> Solo entonces se considera protección completa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alerta-amarilla">
+          ⚠️ <strong>Importante:</strong> La vasectomía <u>no protege inmediatamente</u>. Se necesitan entre <strong>15–20 eyaculaciones</strong> para limpiar el tracto reproductor. Usa protección hasta confirmar el espermatograma.
+        </div>
+      </div>
+
+      <!-- ═══ DOLOR ═══ -->
+      <div class="iTab" id="iTab-dolor">
+
+        <!-- ESCALA VISUAL DE DOLOR -->
+        <div class="pain-scale-box">
+          <div class="ps-title">📊 Escala de Dolor — Experiencia clínica referida</div>
+          <div class="ps-row">
+            <div class="ps-label">Durante el procedimiento</div>
+            <div class="ps-bar-wrap">
+              <div class="ps-bar" style="width:25%; background:linear-gradient(90deg,#4caf50,#8bc34a)"></div>
+              <span class="ps-num">2–3 / 10</span>
+            </div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-label">Post-anestesia (primeras horas)</div>
+            <div class="ps-bar-wrap">
+              <div class="ps-bar" style="width:20%; background:linear-gradient(90deg,#8bc34a,#cddc39)"></div>
+              <span class="ps-num">1–2 / 10</span>
+            </div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-label">Día 2 con analgesia</div>
+            <div class="ps-bar-wrap">
+              <div class="ps-bar" style="width:12%; background:linear-gradient(90deg,#cddc39,#ffeb3b)"></div>
+              <span class="ps-num">1 / 10</span>
+            </div>
+          </div>
+          <div class="ps-scale-nums">
+            <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+          </div>
+          <div class="ps-legend"><span style="color:#4caf50">■</span> Leve &nbsp;·&nbsp; <span style="color:#fbc02d">■</span> Moderado &nbsp;·&nbsp; <span style="color:#f44336">■</span> Severo</div>
+        </div>
+
+        <div class="dolor-grid">
+          <div class="dolor-card azul">
+            <div class="dolor-card-head"><span>💉</span> Durante el procedimiento</div>
+            <p>Anestesia local con <strong>lidocaína</strong>. El único momento incómodo es el pinchazo inicial (similar al dentista). Después solo se percibe presión o jalón leve. <strong>Sin dolor real</strong>.</p>
+          </div>
+          <div class="dolor-card azul">
+            <div class="dolor-card-head"><span>🧊</span> Post-anestesia (2–4 h)</div>
+            <p>Molestia leve a moderada, sensación de peso. Controlable con analgésico oral. La gran mayoría describe la experiencia como <strong>tolerable y mejor de lo esperado</strong>.</p>
+          </div>
+          <div class="dolor-card verde">
+            <div class="dolor-card-head"><span>💊</span> Analgesia recomendada</div>
+            <div class="analg-list">
+              <div class="analg-row"><span class="analg-num">1°</span><span><strong>Paracetamol</strong> 500–1000 mg c/8 h</span></div>
+              <div class="analg-row"><span class="analg-num">2°</span><span><strong>Ibuprofeno</strong> 400 mg c/8 h con alimentos</span></div>
+              <div class="analg-row"><span>🧊</span><span>Hielo local (20 min/hora, en tela)</span></div>
+            </div>
+          </div>
+          <div class="dolor-card rojo">
+            <div class="dolor-card-head"><span>🚨</span> Señales de alarma — Acude de inmediato</div>
+            <div class="alarma-list">
+              <div class="alarma-item"><span>🌡️</span> Fiebre &gt; 38 °C</div>
+              <div class="alarma-item"><span>😣</span> Dolor intenso que no cede</div>
+              <div class="alarma-item"><span>🔴</span> Aumento marcado del escroto</div>
+              <div class="alarma-item"><span>🩸</span> Sangrado activo o hematoma grande</div>
+              <div class="alarma-item"><span>💧</span> Supuración o mal olor en punción</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sexual-box">
+          <span style="font-size:22px">💚</span>
+          <div>
+            <strong>Función sexual intacta:</strong> El reinicio de la actividad sexual es posible desde los <strong>5–7 días</strong>. No hay efecto sobre la erección, el orgasmo ni el volumen del eyaculado. Los espermatozoides son solo el 2–5% del semen.
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MITOS ═══ -->
+      <div class="iTab" id="iTab-mitos">
+        <div class="mitos-intro">
+          <span style="font-size:20px">🧠</span>
+          <span>Toca cada tarjeta para revelar la <strong>realidad científica</strong> detrás de los mitos más comunes sobre la vasectomía.</span>
+        </div>
+        <div class="mitos-flip-grid">
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«La vasectomía afecta la potencia sexual y las erecciones»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">La vasectomía <strong>no afecta la testosterona</strong>. Las erecciones, el deseo, la eyaculación y el orgasmo permanecen completamente iguales. Solo se interrumpe el paso de los espermatozoides.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«El hombre deja de eyacular o eyacula menos»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">Los espermatozoides son solo el <strong>2–5% del semen</strong>. El volumen del eyaculado prácticamente no cambia. La próstata y las vesículas seminales siguen funcionando igual.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«Es una cirugía muy dolorosa y peligrosa»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">Procedimiento ambulatorio de <strong>bajo riesgo</strong>. Anestesia local, 15–30 min, sin hospitalización. Complicaciones graves en menos del 1%. Dolor postoperatorio leve.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«Los espermatozoides se acumulan y hacen daño»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">Los espermatozoides son <strong>reabsorbidos naturalmente</strong> por el organismo. Es un proceso seguro y normal, sin acumulación ni efectos secundarios.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«Causa cáncer de próstata»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">La <strong>OMS y múltiples estudios</strong> han descartado cualquier asociación entre vasectomía y cáncer de próstata, testicular o cardiovascular. No existe evidencia científica.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«El hombre engorda, se debilita o cambia físicamente»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">La vasectomía <strong>no altera la producción de testosterona</strong>. No hay cambios en la masa muscular, el peso, la voz ni ninguna característica masculina.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«Es irreversible, nunca se puede tener hijos»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">Existe la <strong>vasovasostomía</strong> (cirugía de reversión) con éxito del 40–90% según el tiempo. Sin embargo, debe tomarse como una decisión definitiva y de pareja.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="flip-tag mito-tag-f">❌ MITO</div>
+                <div class="flip-text">«Protege contra enfermedades de transmisión sexual»</div>
+                <div class="flip-hint">Toca para ver la realidad →</div>
+              </div>
+              <div class="flip-back">
+                <div class="flip-tag real-tag-f">✅ REALIDAD</div>
+                <div class="flip-text">La vasectomía <strong>NO protege contra ITS</strong> (VIH, gonorrea, sífilis). Solo previene el embarazo. El condón sigue siendo necesario para prevención de ITS.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ BENEFICIOS ═══ -->
+      <div class="iTab" id="iTab-beneficios">
+        <div class="benef-intro">
+          Reconocida por <strong>OMS · OPS · UNFPA · NOM-005-SSA2</strong> como método anticonceptivo seguro, voluntario y altamente eficaz.
+        </div>
+        <div class="benef-grid">
+          <div class="benef-card" style="--bc:#006847;--bl:#e8f4ef">
+            <div class="benef-icon">🎯</div>
+            <div class="benef-stat">99.9%</div>
+            <div class="benef-name">Efectividad</div>
+            <div class="benef-desc">Falla en menos de 1 de cada 2,000 casos. Uno de los métodos más eficaces disponibles.</div>
+          </div>
+          <div class="benef-card" style="--bc:#1a7a45;--bl:#e4f7ec">
+            <div class="benef-icon">💰</div>
+            <div class="benef-stat">$0</div>
+            <div class="benef-name">Costo</div>
+            <div class="benef-desc">Completamente <strong>gratuito</strong> en el sistema IMSS BIENESTAR. Sin gastos futuros en anticonceptivos.</div>
+          </div>
+          <div class="benef-card" style="--bc:#2a7fc1;--bl:#e8f0fb">
+            <div class="benef-icon">⚡</div>
+            <div class="benef-stat">20 min</div>
+            <div class="benef-name">Duración</div>
+            <div class="benef-desc">Procedimiento ambulatorio. El mismo día regresas a casa. Actividad normal en 48–72 h.</div>
+          </div>
+          <div class="benef-card" style="--bc:#7b3fa0;--bl:#f3eaf8">
+            <div class="benef-icon">🌿</div>
+            <div class="benef-stat">0</div>
+            <div class="benef-name">Hormonas</div>
+            <div class="benef-desc">Sin alteración hormonal. Sin efectos sobre el peso, el ánimo ni la salud cardiovascular.</div>
+          </div>
+          <div class="benef-card" style="--bc:#b07d10;--bl:#fdf6e3">
+            <div class="benef-icon">🤝</div>
+            <div class="benef-stat">50/50</div>
+            <div class="benef-name">Corresponsabilidad</div>
+            <div class="benef-desc">Libera a la pareja de la carga exclusiva del uso de anticonceptivos. Decisión de familia.</div>
+          </div>
+          <div class="benef-card" style="--bc:#c0392b;--bl:#fdecea">
+            <div class="benef-icon">🧘</div>
+            <div class="benef-stat">↑</div>
+            <div class="benef-name">Vida sexual</div>
+            <div class="benef-desc">Al eliminar el temor al embarazo, muchas parejas reportan mayor satisfacción y espontaneidad.</div>
+          </div>
+          <div class="benef-card" style="--bc:#2e7d32;--bl:#e8f5e9">
+            <div class="benef-icon">🌎</div>
+            <div class="benef-stat">OMS</div>
+            <div class="benef-name">Aval internacional</div>
+            <div class="benef-desc">Respaldado por OMS, OPS, UNFPA y la Norma Oficial Mexicana NOM-005-SSA2.</div>
+          </div>
+          <div class="benef-card" style="--bc:#37474f;--bl:#eceff1">
+            <div class="benef-icon">👨‍👩‍👧‍👦</div>
+            <div class="benef-stat">∞</div>
+            <div class="benef-name">Tranquilidad</div>
+            <div class="benef-desc">Protección permanente para parejas que han completado su proyecto familiar.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- fin info-body -->
+  </div><!-- fin info-wrapper -->
+</div><!-- fin form-container -->
+
+
+
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-modal">
+    <div class="success-icon">✅</div>
+    <div class="success-title">¡Registro Recibido!</div>
+    <div class="success-text">
+      <div class="success-text">
+      Tus datos han sido capturados. A continuación se abrirá WhatsApp para enviarlos.<br><br>
+      <div style="background:#fff8e1;border:1.5px solid #f59e0b;border-radius:10px;
+                  padding:12px 14px;margin:8px 0;text-align:left;font-size:13px;color:#78350f;line-height:1.6;">
+        ⚠️ <strong>Aviso importante:</strong><br>
+        El número <strong>729 767 2461</strong> <u>no es una línea de atención activa</u>.
+        Es únicamente para <strong>recibir solicitudes de cita</strong>.<br><br>
+        Una vez enviado tu mensaje, el equipo de salud revisará tu información y
+        <strong>te contactará para confirmar tu cita</strong>. Recibirás también una
+        <strong>confirmación de asistencia 72 o 24 horas antes</strong> de la fecha de tu cita
+        (<strong>26 de junio</strong>).
+      </div>
+      <strong style="color:var(--verde)">📲 Abre WhatsApp y presiona "Enviar"</strong> para completar tu registro.
+    </div>
+    <div class="success-steps">
+      <div class="success-step"><div class="step-num">1</div><span><strong>Validación:</strong> Revisaremos tu información y CURP.</span></div>
+      <div class="success-step"><div class="step-num">2</div><span><strong>Contacto:</strong> Nos comunicaremos a tus números para confirmarte el horario.</span></div>
+      <div class="success-step"><div class="step-num">3</div><span><strong>Preparación:</strong> Recuerda: baño, rasurado, ropa interior ajustada y desayuno ligero.</span></div>
+    </div>
+    <div style="font-size:13px;color:#555;margin-bottom:20px;">
+      Dudas urgentes: acude directamente al <strong>Centro de Salud Santa María Pipioltepec</strong>.<br>
+      ¡Felicidades por tomar este paso seguro para tu futuro y el de tu familia! 💚
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="success-close" onclick="closeSuccess()">✖ Cerrar</button>
+      <button class="success-close" style="background:#25D366;" onclick="abrirWhatsApp()">💬 Abrir WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.iTab').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.pill').forEach(el => el.classList.remove('active'));
+    document.getElementById('iTab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ─── AUTORRELLENAR CÓDIGO POSTAL ────────────────────────────
+  function autoCP(selectId, cpId) {
+    const sel = document.getElementById(selectId);
+    const opt = sel.options[sel.selectedIndex];
+    const cp  = opt ? (opt.getAttribute('data-cp') || '') : '';
+    // Rellenar todos los campos cpField visibles
+    document.querySelectorAll('#cpField').forEach(el => el.value = cp);
+    updateProgress();
+  }
+
+  // ─── TABS SECCIÓN INFORMATIVA ────────────────────────────────
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Localidad condicional
+  function showLocalidades() {
+    const mun = document.getElementById('municipio').value;
+    ['valle','donato','amanalco'].forEach(m => {
+      const el = document.getElementById('loc-' + m);
+      el.classList.toggle('visible', m === mun);
+    });
+    updateProgress();
+  }
+
+
+
+  // Progreso
+  const requiredFields = ['nombre','apPat','apMat','edad','fechaNac','curp','calle','colonia','municipio','tel1'];
+  function updateProgress() {
+    let filled = 0;
+    requiredFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value.trim() !== '') filled++;
+    });
+    const pct = Math.round((filled / requiredFields.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent =
+      pct === 100 ? '✓ Formulario completo — listo para enviar' :
+      pct + '% completado';
+  }
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateProgress);
+    if (el) el.addEventListener('change', updateProgress);
+  });
+
+  // ─── VALIDADOR DE CURP ───────────────────────────────────────────────────
+  // Estructura oficial RENAPO: 18 caracteres
+  // Pos  0    : vocal inicial del 1er apellido
+  // Pos  1-3  : consonantes internas (apellido pat, mat, nombre)
+  // Pos  4-9  : fecha nacimiento AAMMDD
+  // Pos  10   : sexo H/M
+  // Pos  11-12: entidad federativa (2 letras)
+  // Pos  13-15: consonantes internas nombre, ap pat, ap mat
+  // Pos  16   : dígito diferenciador (0-9 o A-Z)
+  // Pos  17   : dígito verificador (0-9)
+  const CURP_REGEX = /^[A-Z][AEIOU][A-Z]{2}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[HM](AS|BC|BS|CC|CL|CM|CS|CH|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]\d$/;
+
+  const ESTADOS_CURP = {
+    AS:'Aguascalientes',BC:'Baja California',BS:'Baja California Sur',CC:'Campeche',
+    CL:'Coahuila',CM:'Colima',CS:'Chiapas',CH:'Chihuahua',DF:'Ciudad de México',
+    DG:'Durango',GT:'Guanajuato',GR:'Guerrero',HG:'Hidalgo',JC:'Jalisco',
+    MC:'Estado de México',MN:'Michoacán',MS:'Morelos',NT:'Nayarit',NL:'Nuevo León',
+    OC:'Oaxaca',PL:'Puebla',QT:'Querétaro',QR:'Quintana Roo',SP:'San Luis Potosí',
+    SL:'Sinaloa',SR:'Sonora',TC:'Tabasco',TS:'Tamaulipas',TL:'Tlaxcala',
+    VZ:'Veracruz',YN:'Yucatán',ZS:'Zacatecas',NE:'Nacido en el extranjero'
+  };
+
+  // Palabras inconvenientes que RENAPO reemplaza (tabla oficial)
+  const PALABRAS_INCONVENIENTES = ['BACA','BAKA','BUEI','BUEY','CACA','CACO','CAGA','CAGO','CAKA','CAKO',
+    'COGE','COGI','COJA','COJE','COJI','COJO','COLA','CULO','FALO','FETO','GETA','GUEI','GUEY','JETA',
+    'JOTO','KACA','KACO','KAGA','KAGO','KAKA','KAKO','KOGE','KOGI','KOJA','KOJE','KOJI','KOJO','KOLA',
+    'KULO','LELA','LELO','LOCA','LOCO','LOKA','LOKO','MAME','MAMO','MEAR','MEAS','MEON','MIAR','MION',
+    'MOCO','MOKO','MULA','MULO','NACA','NACO','PEDA','PEDO','PENE','PIPI','PITO','POPO','PUTA','PUTO',
+    'QULO','RATA','ROBA','ROBE','ROBO','RUIN','SENO','TETA','VACA','VAGA','VAGO','VAKA','VUEI','VUEY',
+    'WUEI','WUEY'];
+
+  function validarCURP(curp) {
+    // 1. Longitud y formato regex
+    if (!CURP_REGEX.test(curp)) {
+      // Detectar error específico para mejor feedback
+      if (curp.length !== 18) return { ok: false, msg: `La CURP debe tener exactamente 18 caracteres (tiene ${curp.length}).` };
+      if (!/^[A-Z]/.test(curp)) return { ok: false, msg: 'El primer carácter debe ser una letra mayúscula.' };
+      const sexo = curp[10];
+      if (sexo !== 'H' && sexo !== 'M') return { ok: false, msg: `El carácter 11 debe ser H (Hombre) o M (Mujer). Se ingresó: "${sexo}".` };
+      const estado = curp.substring(11,13);
+      if (!ESTADOS_CURP[estado]) return { ok: false, msg: `El código de entidad "${estado}" no es válido.` };
+      // Verificar fecha
+      const yy = parseInt(curp.substring(4,6));
+      const mm = parseInt(curp.substring(6,8));
+      const dd = parseInt(curp.substring(8,10));
+      if (mm < 1 || mm > 12) return { ok: false, msg: `El mes "${String(mm).padStart(2,'0')}" en la CURP no es válido.` };
+      if (dd < 1 || dd > 31) return { ok: false, msg: `El día "${String(dd).padStart(2,'0')}" en la CURP no es válido.` };
+      return { ok: false, msg: 'La estructura de la CURP no es válida. Verifica cada campo.' };
+    }
+
+    // 2. Palabras inconvenientes (primeras 4 letras)
+    const primeras4 = curp.substring(0,4);
+    if (PALABRAS_INCONVENIENTES.includes(primeras4)) {
+      return { ok: false, msg: `La CURP con inicio "${primeras4}" es una palabra reservada por RENAPO. Verifica que sea correcta.` };
+    }
+
+    // 3. Sexo: para vasectomía solo H
+    const sexo = curp[10];
+    if (sexo !== 'H') {
+      return { ok: false, msg: 'La CURP corresponde a una persona de sexo femenino (M). Esta campaña es exclusiva para hombres (H).' };
+    }
+
+    // 4. Extraer fecha de nacimiento de la CURP
+    const yy = parseInt(curp.substring(4,6));
+    const mm = parseInt(curp.substring(6,8));
+    const dd = parseInt(curp.substring(8,10));
+
+    // Determinar siglo: dígito diferenciador pos 16
+    // 0-9 → nacido antes de 2000; A-Z → nacido 2000 en adelante
+    const difChar = curp[16];
+    const esSigloXXI = /[A-Z]/.test(difChar);
+    const aaaa = esSigloXXI ? 2000 + yy : 1900 + yy;
+
+    const fechaCURP = new Date(aaaa, mm - 1, dd);
+    const hoy = new Date();
+
+    // 5. Fecha coherente (no futura)
+    if (fechaCURP > hoy) {
+      return { ok: false, msg: `La fecha de nacimiento extraída de la CURP (${dd.toString().padStart(2,'0')}/${mm.toString().padStart(2,'0')}/${aaaa}) es una fecha futura. Verifica la CURP.` };
+    }
+
+    // 6. Calcular edad real a partir de la CURP
+    let edadCURP = hoy.getFullYear() - aaaa;
+    const mesHoy = hoy.getMonth();
+    const diaHoy = hoy.getDate();
+    if (mesHoy < mm - 1 || (mesHoy === mm - 1 && diaHoy < dd)) edadCURP--;
+
+    if (edadCURP < 18) {
+      return {
+        ok: false,
+        msg: `⚠️ MENOR DE EDAD: La CURP indica una fecha de nacimiento del ${dd.toString().padStart(2,'0')}/${mm.toString().padStart(2,'0')}/${aaaa} (${edadCURP} años). Solo se aceptan mayores de 18 años.`
+      };
+    }
+
+    // 7. Cruzar con fecha de nacimiento capturada en el formulario (si existe)
+    const fechaInput = document.getElementById('fechaNac').value;
+    if (fechaInput) {
+      const [fY, fM, fD] = fechaInput.split('-').map(Number);
+      if (fY !== aaaa || fM !== mm || fD !== dd) {
+        return {
+          ok: false,
+          msg: `La fecha de nacimiento capturada (${fD.toString().padStart(2,'0')}/${fM.toString().padStart(2,'0')}/${fY}) no coincide con la que registra la CURP (${dd.toString().padStart(2,'0')}/${mm.toString().padStart(2,'0')}/${aaaa}). Verifica ambos datos.`
+        };
+      }
+    }
+
+    // 8. Cruzar con edad capturada
+    const edadInput = parseInt(document.getElementById('edad').value);
+    if (!isNaN(edadInput) && Math.abs(edadInput - edadCURP) > 1) {
+      return {
+        ok: false,
+        msg: `La edad capturada (${edadInput} años) no coincide con la calculada según la CURP (${edadCURP} años). Verifica los datos.`
+      };
+    }
+
+    return {
+      ok: true,
+      msg: `✓ CURP válida · ${ESTADOS_CURP[curp.substring(11,13)]} · ${edadCURP} años · Sexo: ${sexo === 'H' ? 'Hombre' : 'Mujer'}`,
+      edadCURP, aaaa, mm, dd
+    };
+  }
+
+  // Validación en tiempo real al escribir la CURP
+  document.getElementById('curp').addEventListener('input', function() {
+    const val = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    this.value = val;
+    const len = val.length;
+    const counter = document.getElementById('curpCounter');
+    const errEl = document.getElementById('err-curp');
+
+    if (len < 18) {
+      counter.textContent = len + ' / 18 caracteres';
+      counter.className = 'curp-counter' + (len > 0 ? ' error' : '');
+      this.classList.remove('invalid');
+      errEl.classList.remove('show');
+    } else {
+      const resultado = validarCURP(val);
+      if (resultado.ok) {
+        counter.textContent = resultado.msg;
+        counter.className = 'curp-counter complete';
+        this.classList.remove('invalid');
+        errEl.classList.remove('show');
+        // Autorellenar fecha si está vacía
+        const fechaEl = document.getElementById('fechaNac');
+        if (!fechaEl.value && resultado.aaaa) {
+          const mm2 = String(resultado.mm).padStart(2,'0');
+          const dd2 = String(resultado.dd).padStart(2,'0');
+          fechaEl.value = `${resultado.aaaa}-${mm2}-${dd2}`;
+        }
+        // Autorellenar edad si está vacía
+        const edadEl = document.getElementById('edad');
+        if (!edadEl.value && resultado.edadCURP) {
+          edadEl.value = resultado.edadCURP;
+        }
+        updateProgress();
+      } else {
+        counter.textContent = resultado.msg;
+        counter.className = 'curp-counter error';
+        this.classList.add('invalid');
+        errEl.textContent = resultado.msg;
+        errEl.classList.add('show');
+      }
+    }
+    updateProgress();
+  });
+
+  // ─── VALIDACIÓN DEL FORMULARIO ───────────────────────────────────────────
+  function validate() {
+    let ok = true;
+    function setField(id, errId, valid, msg) {
+      const el = document.getElementById(id);
+      const err = document.getElementById(errId);
+      if (!valid) {
+        el.classList.add('invalid');
+        if (err) { err.textContent = msg; err.classList.add('show'); }
+        ok = false;
+      } else {
+        el.classList.remove('invalid');
+        if (err) err.classList.remove('show');
+      }
+    }
+
+    setField('nombre','err-nombre', document.getElementById('nombre').value.trim().length >= 2, 'Este campo es obligatorio.');
+    setField('apPat','err-apPat', document.getElementById('apPat').value.trim().length >= 2, 'Este campo es obligatorio.');
+    setField('apMat','err-apMat', document.getElementById('apMat').value.trim().length >= 2, 'Este campo es obligatorio.');
+
+    // Edad
+    const edadVal = parseInt(document.getElementById('edad').value);
+    setField('edad','err-edad', !isNaN(edadVal) && edadVal >= 18 && edadVal <= 99,
+      edadVal < 18 ? '⚠️ Solo se aceptan mayores de 18 años.' : 'Ingresa una edad válida (18–99).');
+
+    // Fecha
+    setField('fechaNac','err-fechaNac', document.getElementById('fechaNac').value !== '', 'Este campo es obligatorio.');
+
+    // CURP — validación completa
+    const curpVal = document.getElementById('curp').value.trim();
+    const curpResult = curpVal.length === 18 ? validarCURP(curpVal) : { ok: false, msg: `La CURP debe tener 18 caracteres (tiene ${curpVal.length}).` };
+    setField('curp','err-curp', curpResult.ok, curpResult.msg);
+
+    setField('calle','err-calle', document.getElementById('calle').value.trim().length >= 3, 'Este campo es obligatorio.');
+    setField('colonia','err-colonia', document.getElementById('colonia').value.trim().length >= 2, 'Este campo es obligatorio.');
+    setField('municipio','err-municipio', document.getElementById('municipio').value !== '', 'Selecciona un municipio.');
+    setField('tel1','err-tel1', document.getElementById('tel1').value.trim().length >= 7, 'Ingresa un número de teléfono válido.');
+
+    const mun = document.getElementById('municipio').value;
+    if (mun === 'valle') setField('locValle','err-locValle', document.getElementById('locValle').value !== '', 'Selecciona tu localidad.');
+    else if (mun === 'donato') setField('locDonato','err-locDonato', document.getElementById('locDonato').value !== '', 'Selecciona tu localidad.');
+    else if (mun === 'amanalco') setField('locAmanalco','err-locAmanalco', document.getElementById('locAmanalco').value !== '', 'Selecciona tu localidad.');
+
+    return ok;
+  }
+
+  function getLocalidad() {
+    const mun = document.getElementById('municipio').value;
+    let sel;
+    if (mun === 'valle') sel = document.getElementById('locValle');
+    else if (mun === 'donato') sel = document.getElementById('locDonato');
+    else if (mun === 'amanalco') sel = document.getElementById('locAmanalco');
+    if (!sel) return { nombre: '—', cp: '—' };
+    const opt = sel.options[sel.selectedIndex];
+    return {
+      nombre: sel.value || '—',
+      cp: opt ? (opt.getAttribute('data-cp') || '—') : '—'
+    };
+  }
+
+  function getMunicipioLabel() {
+    const mun = document.getElementById('municipio').value;
+    if (mun === 'valle') return 'Valle de Bravo';
+    if (mun === 'donato') return 'Donato Guerra';
+    if (mun === 'amanalco') return 'Amanalco';
+    return '—';
+  }
+
+  function buildWhatsAppMessage() {
+    const nombre    = document.getElementById('nombre').value.trim();
+    const apPat     = document.getElementById('apPat').value.trim();
+    const apMat     = document.getElementById('apMat').value.trim();
+    const edad      = document.getElementById('edad').value.trim();
+    const fechaNac  = document.getElementById('fechaNac').value;
+    const curp      = document.getElementById('curp').value.trim();
+    const calle     = document.getElementById('calle').value.trim();
+    const colonia   = document.getElementById('colonia').value.trim();
+    const municipio  = getMunicipioLabel();
+    const loc        = getLocalidad();
+    const localidad  = loc.nombre;
+    const cp         = loc.cp;
+    const tel1      = document.getElementById('tel1').value.trim();
+    const tel2      = document.getElementById('tel2').value.trim();
+
+    // Fecha legible
+    let fechaLegible = '—';
+    if (fechaNac) {
+      const [y,m,d] = fechaNac.split('-');
+      const meses = ['','enero','febrero','marzo','abril','mayo','junio',
+                     'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+      fechaLegible = `${parseInt(d)} de ${meses[parseInt(m)]} de ${y}`;
+    }
+
+    // Fecha/hora de registro
+    const ahora = new Date();
+    const fechaReg = ahora.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const horaReg  = ahora.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+
+    const linea = '━━━━━━━━━━━━━━━━━━━━━';
+
+    const msg =
+`🏥 *JORNADA DE VASECTOMÍA SIN BISTURÍ*
+🏛️ _C.S. Santa María Pipioltepec · IMSS BIENESTAR_
+${linea}
+
+👤 *DATOS PERSONALES*
+🔹 *Nombre:*  ${nombre} ${apPat} ${apMat}
+🎂 *Edad:*  ${edad} años
+📅 *Fecha de nacimiento:*  ${fechaLegible}
+🪪 *CURP:*  \`${curp}\`
+${linea}
+
+🏠 *DOMICILIO*
+🛖 *Calle y número:*  ${calle}
+🌿 *Colonia / Barrio:*  ${colonia}
+🏘️ *Municipio:*  ${municipio}
+📍 *Localidad:*  ${localidad}
+📮 *C.P.:*  ${cp}
+${linea}
+
+📞 *CONTACTO*
+📱 *Teléfono 1:*  ${tel1}
+📲 *Teléfono 2:*  ${tel2 || '—'}
+${linea}
+
+🕐 *Registro:*  ${fechaReg} a las ${horaReg} hrs
+📋 *Estatus:*  🟡 Pendiente de confirmar
+🗓️ *Fecha de jornada:*  26 de junio de 2026`;
+
+    return msg;
+  }
+
+  function abrirWhatsApp() {
+    const numero  = '527297672461'; // +52 México · 7297672461
+    const mensaje = buildWhatsAppMessage();
+    const url     = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(mensaje);
+    window.location.href = url; // Redirige directo (funciona en móvil y escritorio)
+  }
+
+  // ─── BASE DE DATOS LOCAL (localStorage) ────────────────────
+  function getRegistrados() {
+    try { return JSON.parse(localStorage.getItem('vasectomia_jornada_2026') || '[]'); }
+    catch(e) { return []; }
+  }
+
+  function curpYaRegistrada(curp) {
+    return getRegistrados().some(r => r.curp === curp.toUpperCase());
+  }
+
+  function guardarRegistro(curp, nombre) {
+    const lista = getRegistrados();
+    lista.push({
+      curp: curp.toUpperCase(),
+      nombre: nombre,
+      fechaRegistro: new Date().toISOString()
+    });
+    try { localStorage.setItem('vasectomia_jornada_2026', JSON.stringify(lista)); }
+    catch(e) { console.warn('localStorage no disponible en este entorno'); }
+  }
+
+  document.getElementById('mainForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (validate()) {
+      const curpVal = document.getElementById('curp').value.trim().toUpperCase();
+
+      // ── Verificar CURP duplicada ──────────────────────────
+      if (curpYaRegistrada(curpVal)) {
+        const errEl = document.getElementById('err-curp');
+        const inpEl = document.getElementById('curp');
+        inpEl.classList.add('invalid');
+        errEl.textContent = '⚠️ Esta CURP ya tiene un registro activo para la jornada del 26 de junio. Solo se permite un registro por persona. Si tienes dudas, acude directamente al Centro de Salud de Santa María Pipioltepec.';
+        errEl.classList.add('show');
+        inpEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // ── Guardar registro ──────────────────────────────────
+      const nombreCompleto = [
+        document.getElementById('nombre').value.trim(),
+        document.getElementById('apPat').value.trim(),
+        document.getElementById('apMat').value.trim()
+      ].join(' ');
+      guardarRegistro(curpVal, nombreCompleto);
+
+      // ── Mostrar confirmación y abrir WhatsApp ─────────────
+      document.getElementById('successOverlay').classList.add('show');
+      setTimeout(abrirWhatsApp, 2200);
+
+    } else {
+      const firstInvalid = document.querySelector('.invalid');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
+  function closeSuccess() {
+    document.getElementById('successOverlay').classList.remove('show');
+    document.getElementById('mainForm').reset();
+    ['valle','donato','amanalco'].forEach(m =>
+      document.getElementById('loc-' + m).classList.remove('visible'));
+    document.getElementById('curpCounter').textContent = '0 / 18 caracteres';
+    document.getElementById('curpCounter').className = 'curp-counter';
+    updateProgress();
+  }
+</script>
+</body>
+</html>
