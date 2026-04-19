@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario de Medicamentos — IMSS BIENESTAR</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+:root {
+  --verde: #006847;
+  --verde-claro: #008f5d;
+  --verde-suave: #e8f4ef;
+  --rojo: #c0392b;
+  --dorado: #c8973a;
+  --blanco: #f9faf8;
+  --gris-claro: #eef0ed;
+  --gris-medio: #9aaa96;
+  --gris-texto: #3a3f35;
+  --borde: #cad5c5;
+  --sombra: 0 2px 16px rgba(0,100,60,0.09);
+  --amarillo: #f3c23a;
+  --amarillo-suave: #fdf4d9;
+  --rojo-suave: #fde4e1;
+  --negro-sem: #1c1c1c;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: #f0f4f0;
+  color: var(--gris-texto);
+  min-height: 100vh;
+  padding: 0 0 60px 0;
+}
+
+h1,h2,h3 { font-family: 'Lora', serif; font-weight: 600; }
+
+.header-banner {
+  background: linear-gradient(135deg, #004d35 0%, #006847 50%, #008f5d 100%);
+  color: white;
+  padding: 28px 24px 26px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header-banner h1 { font-size: 1.6rem; letter-spacing: 0.3px; }
+.header-banner .sub { opacity: 0.88; margin-top: 6px; font-size: 0.95rem; }
+.header-banner::before,
+.header-banner::after {
+  content: ''; position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.header-banner::before { top: -40px; right: -40px; width: 200px; height: 200px; }
+.header-banner::after { bottom: -60px; left: -30px; width: 160px; height: 160px; }
+.header-back {
+  position: absolute; top: 16px; left: 16px;
+  color: #fff; text-decoration: none; background: rgba(255,255,255,0.12);
+  padding: 6px 12px; border-radius: 20px; font-size: 0.85rem;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 20px 16px 0; }
+
+.pill-bar {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 10px 4px 16px; margin-bottom: 10px;
+  scrollbar-width: thin;
+}
+.pill {
+  flex: 0 0 auto; cursor: pointer;
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(0,104,71,0.08); color: var(--verde);
+  font-weight: 500; border: 1px solid transparent;
+  white-space: nowrap; font-size: 0.95rem;
+  transition: all 0.2s;
+}
+.pill:hover { background: rgba(0,104,71,0.14); }
+.pill.active {
+  background: #fff; color: var(--verde);
+  border-color: var(--verde); box-shadow: var(--sombra);
+}
+.pill .ico { margin-right: 6px; }
+
+.section-card {
+  background: #fff; border-radius: 12px;
+  padding: 22px; margin-bottom: 16px;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--borde);
+  border-top: 3px solid var(--verde);
+  animation: fadeUp 0.35s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-card h2 { color: var(--verde); font-size: 1.2rem; margin-bottom: 14px; }
+.section-card h3 { color: var(--verde); font-size: 1rem; margin: 14px 0 8px; }
+.iTab { display: none; }
+.iTab.active { display: block; }
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-group label {
+  font-size: 0.85rem; font-weight: 500; color: var(--verde);
+}
+.field-group input,
+.field-group select,
+.field-group textarea {
+  padding: 9px 12px; border: 1px solid var(--borde);
+  border-radius: 8px; background: #fff; font-size: 0.95rem;
+  font-family: inherit; color: var(--gris-texto);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
+  outline: none; border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(0,104,71,0.15);
+}
+.field-hint { font-size: 0.78rem; color: var(--gris-medio); }
+.field-group.full { grid-column: 1 / -1; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; cursor: pointer;
+  padding: 10px 18px; border-radius: 8px;
+  font-size: 0.95rem; font-weight: 500;
+  border: none; font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--verde); color: #fff; }
+.btn-primary:hover { background: var(--verde-claro); }
+.btn-secondary { background: var(--gris-claro); color: var(--gris-texto); border: 1px solid var(--borde); }
+.btn-secondary:hover { background: #e0e5de; }
+.btn-danger { background: var(--rojo); color: #fff; }
+.btn-danger:hover { background: #a63022; }
+.btn-ghost { background: transparent; color: var(--verde); border: 1px solid var(--verde); }
+.btn-ghost:hover { background: var(--verde-suave); }
+.btn-sm { padding: 6px 10px; font-size: 0.85rem; }
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; }
+
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.9rem; background: #fff;
+}
+th, td {
+  padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--gris-claro);
+  vertical-align: middle;
+}
+th {
+  background: var(--verde-suave); color: var(--verde);
+  font-weight: 600; position: sticky; top: 0; z-index: 1;
+  font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.3px;
+}
+tr:hover td { background: #fafdfa; }
+.table-wrap {
+  overflow: auto; max-height: 65vh;
+  border: 1px solid var(--borde); border-radius: 8px;
+}
+
+.sem {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 999px; font-size: 0.82rem;
+  font-weight: 600; min-width: 64px; text-align: center;
+}
+.sem-verde { background: var(--verde-suave); color: var(--verde); }
+.sem-amarillo { background: var(--amarillo-suave); color: #7a5a0a; }
+.sem-rojo { background: var(--rojo-suave); color: var(--rojo); }
+.sem-negro { background: var(--negro-sem); color: #fff; }
+.sem-aviso {
+  display: inline-block; margin-left: 6px;
+  padding: 2px 8px; border-radius: 4px;
+  background: #ffe8d1; color: #9a4600;
+  font-size: 0.72rem; font-weight: 600;
+}
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--verde); color: #fff;
+  padding: 12px 22px; border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  font-size: 0.95rem; z-index: 9999;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.error { background: var(--rojo); }
+.toast.warn { background: var(--dorado); }
+
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9000; padding: 16px;
+}
+.overlay.show { display: flex; }
+.modal {
+  background: #fff; border-radius: 14px;
+  padding: 22px; max-width: 520px; width: 100%;
+  max-height: 92vh; overflow: auto;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.28);
+}
+.modal h3 { color: var(--verde); margin-bottom: 10px; }
+.modal .actions {
+  display: flex; gap: 8px; justify-content: flex-end;
+  margin-top: 18px; flex-wrap: wrap;
+}
+#qr-reader { width: 100%; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px; margin-bottom: 16px;
+}
+.kpi {
+  background: #fff; border: 1px solid var(--borde);
+  border-radius: 10px; padding: 12px 14px;
+}
+.kpi .label { font-size: 0.78rem; color: var(--gris-medio); text-transform: uppercase; }
+.kpi .value { font-size: 1.45rem; color: var(--verde); font-weight: 600; margin-top: 2px; }
+
+.filter-bar {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 8px 0 14px; align-items: end;
+}
+.filter-bar .field-group { min-width: 150px; }
+
+.badge {
+  background: var(--verde-suave); color: var(--verde);
+  padding: 2px 8px; border-radius: 6px; font-size: 0.8rem;
+}
+.badge-red { background: var(--rojo-suave); color: var(--rojo); }
+
+.row-caducado td { background: #2a2a2a !important; color: #fff; }
+.row-caducado td a, .row-caducado td .sem { color: #fff; }
+
+@media (max-width: 640px) {
+  .header-banner h1 { font-size: 1.3rem; }
+  .section-card { padding: 16px; }
+  th, td { padding: 6px 8px; font-size: 0.82rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-banner">
+  <a href="vasectomia_registro-1.html" class="header-back">&larr; Jornada</a>
+  <h1>Inventario de Medicamentos</h1>
+  <div class="sub">Catálogo IMSS-BIENESTAR / Secretaría de Salud</div>
+</header>
+
+<div class="container">
+  <nav class="pill-bar" role="tablist" id="pillBar">
+    <button class="pill active" data-tab="entrada"><span class="ico">&#10133;</span>Entrada</button>
+    <button class="pill" data-tab="salida"><span class="ico">&#10134;</span>Salida</button>
+    <button class="pill" data-tab="stock"><span class="ico">&#128200;</span>Stock</button>
+    <button class="pill" data-tab="historial"><span class="ico">&#128196;</span>Historial</button>
+    <button class="pill" data-tab="catalogo"><span class="ico">&#128218;</span>Catálogo</button>
+    <button class="pill" data-tab="backup"><span class="ico">&#128190;</span>Respaldo</button>
+    <button class="pill" data-tab="ajustes"><span class="ico">&#9881;</span>Ajustes</button>
+  </nav>
+
+  <!-- Tabs content injected by JS -->
+  <section id="tab-entrada" class="iTab active"></section>
+  <section id="tab-salida" class="iTab"></section>
+  <section id="tab-stock" class="iTab"></section>
+  <section id="tab-historial" class="iTab"></section>
+  <section id="tab-catalogo" class="iTab"></section>
+  <section id="tab-backup" class="iTab"></section>
+  <section id="tab-ajustes" class="iTab"></section>
+</div>
+
+<!-- Overlays -->
+<div class="overlay" id="overlay-camera">
+  <div class="modal">
+    <h3>Escáner por cámara</h3>
+    <p class="field-hint">Apunta al código de barras del medicamento (EAN/Code128/QR).</p>
+    <div id="qr-reader" style="margin-top:10px"></div>
+    <div class="actions">
+      <button class="btn btn-secondary" id="btn-camera-close">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-generic">
+  <div class="modal" id="modal-generic"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Placeholder: catalog + logic injected in separate chunks -->
+<script>
+/* INVENTARIO DE MEDICAMENTOS - IMSS BIENESTAR
+ * Single-file SPA. Datos en localStorage. Excel + JSON import/export.
+ * Escáner: cámara (html5-qrcode) + lector físico (input auto-focus).
+ */
+// Formato de fila: [clave, grupo, nombreGenerico, presentacion, concentracion, unidadesPorEmpaque, descripcion, pesoUnitario_g, pesoEmpaque_g]
+const CATALOGO_SEED_ROWS = [
+ ["010.000.0101.00","Analgésicos","Ácido acetilsalicílico","Tableta","500 mg",20,"ÁCIDO ACETILSALICÍLICO 500 mg tableta, envase con 20 tabletas.",0.55,12],
+ ["010.000.0104.00","Analgésicos","Paracetamol","Tableta","500 mg",10,"PARACETAMOL 500 mg tableta, envase con 10 tabletas.",0.60,10],
+ ["010.000.0105.00","Analgésicos","Paracetamol","Solución oral","100 mg/ml",15,"PARACETAMOL 100 mg/ml solución oral, frasco con 15 ml.",1.00,30],
+ ["010.000.0106.00","Analgésicos","Metamizol sódico","Solución inyectable","1 g/2 ml",3,"METAMIZOL SÓDICO 1 g/2 ml solución inyectable, envase con 3 ampolletas.",3.00,25],
+ ["010.000.0621.00","AINE","Ibuprofeno","Tableta","400 mg",30,"IBUPROFENO 400 mg tableta, envase con 30 tabletas.",0.65,15],
+ ["010.000.3407.00","AINE","Ketorolaco","Tableta","10 mg",20,"KETOROLACO 10 mg tableta, envase con 20 tabletas.",0.35,12],
+ ["010.000.3408.00","AINE","Ketorolaco","Solución inyectable","30 mg/ml",3,"KETOROLACO 30 mg/ml solución inyectable, envase con 3 ampolletas.",2.50,20],
+ ["010.000.3419.00","AINE","Diclofenaco","Solución inyectable","75 mg/3 ml",2,"DICLOFENACO 75 mg/3 ml solución inyectable, envase con 2 ampolletas.",3.20,18],
+ ["010.000.3422.00","AINE","Diclofenaco","Tableta","100 mg",20,"DICLOFENACO 100 mg tableta LP, envase con 20 tabletas.",0.50,14],
+ ["010.000.0243.00","Anestésicos","Lidocaína","Solución inyectable","2%",5,"LIDOCAÍNA 2% solución inyectable, envase con 5 frascos ámpula de 50 ml.",55.00,60],
+ ["010.000.0241.00","Anestésicos","Lidocaína","Solución inyectable","1%",5,"LIDOCAÍNA 1% solución inyectable, envase con 5 frascos ámpula de 50 ml.",55.00,60],
+ ["010.000.0242.00","Anestésicos","Lidocaína + epinefrina","Solución inyectable","2%",5,"LIDOCAÍNA 2% con EPINEFRINA 1:200 000 solución inyectable, envase con 5 frascos ámpula.",55.00,60],
+ ["010.000.0271.00","Anestésicos","Bupivacaína","Solución inyectable","5 mg/ml",5,"BUPIVACAÍNA 0.5% solución inyectable, envase con 5 frascos ámpula.",20.00,50],
+ ["010.000.0611.00","Cardiovascular","Atropina","Solución inyectable","1 mg/ml",50,"ATROPINA 1 mg/ml solución inyectable, envase con 50 ampolletas de 1 ml.",2.20,250],
+ ["010.000.0612.00","Cardiovascular","Epinefrina","Solución inyectable","1 mg/ml",50,"EPINEFRINA 1 mg/ml solución inyectable, envase con 50 ampolletas de 1 ml.",2.20,250],
+ ["010.000.0539.00","Cardiovascular","Digoxina","Tableta","0.25 mg",20,"DIGOXINA 0.25 mg tableta, envase con 20 tabletas.",0.30,10],
+ ["010.000.0597.00","Hematológicos","Heparina sódica","Solución inyectable","5 000 UI/ml",50,"HEPARINA SÓDICA 5 000 UI/ml solución inyectable, envase con 50 frascos.",6.00,120],
+ ["010.000.0598.00","Hematológicos","Enoxaparina","Solución inyectable","40 mg/0.4 ml",2,"ENOXAPARINA 40 mg/0.4 ml jeringa prellenada, envase con 2 jeringas.",5.00,25],
+ ["010.000.0472.00","Corticoides","Prednisona","Tableta","5 mg",30,"PREDNISONA 5 mg tableta, envase con 30 tabletas.",0.25,9],
+ ["010.000.0473.00","Corticoides","Prednisona","Tableta","50 mg",30,"PREDNISONA 50 mg tableta, envase con 30 tabletas.",0.45,12],
+ ["010.000.0474.00","Corticoides","Dexametasona","Solución inyectable","8 mg/2 ml",5,"DEXAMETASONA 8 mg/2 ml solución inyectable, envase con 5 ampolletas.",3.10,28],
+ ["010.000.0476.00","Corticoides","Hidrocortisona","Solución inyectable","100 mg",50,"HIDROCORTISONA 100 mg solución inyectable liofilizado, envase con 50 frascos.",4.50,220],
+ ["010.000.0477.00","Corticoides","Metilprednisolona","Solución inyectable","500 mg",1,"METILPREDNISOLONA 500 mg solución inyectable, envase con 1 frasco ámpula.",8.00,40],
+ ["010.000.0402.00","Antihistamínicos","Clorfenamina","Tableta","4 mg",20,"CLORFENAMINA 4 mg tableta, envase con 20 tabletas.",0.30,10],
+ ["010.000.0403.00","Antihistamínicos","Clorfenamina","Solución inyectable","10 mg/ml",5,"CLORFENAMINA 10 mg/ml solución inyectable, envase con 5 ampolletas.",2.50,22],
+ ["010.000.0421.00","Antihistamínicos","Loratadina","Tableta","10 mg",20,"LORATADINA 10 mg tableta, envase con 20 tabletas.",0.35,10],
+ ["010.000.0422.00","Antihistamínicos","Loratadina","Jarabe","5 mg/5 ml",60,"LORATADINA jarabe 5 mg/5 ml, envase con 60 ml.",1.05,30],
+ ["010.000.0429.00","Respiratorio","Salbutamol","Aerosol","100 mcg/dosis",200,"SALBUTAMOL 100 mcg/dosis aerosol, envase con 200 dosis.",0.04,25],
+ ["010.000.0431.00","Respiratorio","Ambroxol","Jarabe","15 mg/5 ml",120,"AMBROXOL jarabe 15 mg/5 ml, envase con 120 ml.",1.05,45],
+ ["010.000.1042.00","Endocrino","Metformina","Tableta","850 mg",30,"METFORMINA 850 mg tableta, envase con 30 tabletas.",1.10,18],
+ ["010.000.1043.00","Endocrino","Glibenclamida","Tableta","5 mg",50,"GLIBENCLAMIDA 5 mg tableta, envase con 50 tabletas.",0.20,14],
+ ["010.000.1050.00","Endocrino","Insulina humana NPH","Suspensión inyectable","100 UI/ml",1,"INSULINA HUMANA NPH 100 UI/ml suspensión inyectable, frasco con 10 ml.",14.00,18],
+ ["010.000.1051.00","Endocrino","Insulina humana regular","Solución inyectable","100 UI/ml",1,"INSULINA HUMANA REGULAR 100 UI/ml solución inyectable, frasco con 10 ml.",14.00,18],
+ ["010.000.5165.00","Endocrino","Insulina glargina","Solución inyectable","100 UI/ml",1,"INSULINA GLARGINA 100 UI/ml solución inyectable, frasco con 10 ml.",14.00,22],
+ ["010.000.1207.00","Gastroenterología","Ranitidina","Tableta","150 mg",30,"RANITIDINA 150 mg tableta, envase con 30 tabletas.",0.35,12],
+ ["010.000.1209.00","Gastroenterología","Ranitidina","Solución inyectable","50 mg/2 ml",5,"RANITIDINA 50 mg/2 ml solución inyectable, envase con 5 ampolletas.",3.00,25],
+ ["010.000.1233.00","Gastroenterología","Omeprazol","Cápsula","20 mg",14,"OMEPRAZOL 20 mg cápsula, envase con 14 cápsulas.",0.28,10],
+ ["010.000.1234.00","Gastroenterología","Pantoprazol","Tableta","40 mg",14,"PANTOPRAZOL 40 mg tableta, envase con 14 tabletas.",0.34,11],
+ ["010.000.1241.00","Gastroenterología","Butilhioscina","Tableta","10 mg",30,"BUTILHIOSCINA 10 mg tableta, envase con 30 tabletas.",0.30,10],
+ ["010.000.1242.00","Gastroenterología","Butilhioscina","Solución inyectable","20 mg/ml",3,"BUTILHIOSCINA 20 mg/ml solución inyectable, envase con 3 ampolletas.",2.20,18],
+ ["010.000.1206.00","Gastroenterología","Metoclopramida","Tableta","10 mg",20,"METOCLOPRAMIDA 10 mg tableta, envase con 20 tabletas.",0.20,8],
+ ["010.000.1251.00","Gastroenterología","Loperamida","Cápsula","2 mg",12,"LOPERAMIDA 2 mg cápsula, envase con 12 cápsulas.",0.18,6],
+ ["010.000.1212.00","Gastroenterología","Lactulosa","Solución oral","10 g/15 ml",200,"LACTULOSA solución oral 10 g/15 ml, envase con 200 ml.",1.10,45],
+ ["010.000.1904.00","Antibióticos","Penicilina benzatínica","Suspensión inyectable","1 200 000 UI",1,"PENICILINA G BENZATÍNICA 1 200 000 UI suspensión inyectable, envase con 1 frasco ámpula + 5 ml diluyente.",5.00,40],
+ ["010.000.1907.00","Antibióticos","Azitromicina","Tableta","500 mg",3,"AZITROMICINA 500 mg tableta, envase con 3 tabletas.",0.55,8],
+ ["010.000.1927.00","Antibióticos","Dicloxacilina","Cápsula","500 mg",20,"DICLOXACILINA 500 mg cápsula, envase con 20 cápsulas.",0.55,16],
+ ["010.000.1928.00","Antibióticos","Dicloxacilina","Suspensión oral","250 mg/5 ml",75,"DICLOXACILINA 250 mg/5 ml suspensión oral, envase con 75 ml.",1.05,50],
+ ["010.000.1932.00","Antibióticos","Eritromicina","Tableta","500 mg",20,"ERITROMICINA 500 mg tableta, envase con 20 tabletas.",0.70,18],
+ ["010.000.1937.00","Antibióticos","Amoxicilina","Cápsula","500 mg",12,"AMOXICILINA 500 mg cápsula, envase con 12 cápsulas.",0.55,12],
+ ["010.000.1939.00","Antibióticos","Amoxicilina","Suspensión oral","250 mg/5 ml",75,"AMOXICILINA 250 mg/5 ml suspensión oral, envase con 75 ml.",1.05,55],
+ ["010.000.1954.00","Antibióticos","Metronidazol","Tableta","500 mg",30,"METRONIDAZOL 500 mg tableta, envase con 30 tabletas.",0.55,16],
+ ["010.000.1955.00","Antibióticos","Metronidazol","Solución inyectable","500 mg/100 ml",1,"METRONIDAZOL 500 mg/100 ml solución inyectable, envase con 1 frasco.",105.00,15],
+ ["010.000.1972.00","Antibióticos","Ceftriaxona","Solución inyectable","1 g",1,"CEFTRIAXONA 1 g solución inyectable, envase con 1 frasco ámpula + 10 ml diluyente.",11.00,45],
+ ["010.000.1973.00","Antibióticos","Cefalexina","Cápsula","500 mg",20,"CEFALEXINA 500 mg cápsula, envase con 20 cápsulas.",0.55,16],
+ ["010.000.1984.00","Antibióticos","Clindamicina","Cápsula","300 mg",16,"CLINDAMICINA 300 mg cápsula, envase con 16 cápsulas.",0.45,14],
+ ["010.000.1985.00","Antibióticos","Clindamicina","Solución inyectable","300 mg/2 ml",6,"CLINDAMICINA 300 mg/2 ml solución inyectable, envase con 6 ampolletas.",3.00,40],
+ ["010.000.1993.00","Antibióticos","TMP-SMX","Tableta","80/400 mg",20,"TRIMETOPRIM-SULFAMETOXAZOL 80/400 mg tableta, envase con 20 tabletas.",0.45,14],
+ ["010.000.4251.00","Antibióticos","Ciprofloxacino","Tableta","250 mg",8,"CIPROFLOXACINO 250 mg tableta, envase con 8 tabletas.",0.55,10],
+ ["010.000.4255.00","Antibióticos","Ciprofloxacino","Tableta","500 mg",8,"CIPROFLOXACINO 500 mg tableta, envase con 8 tabletas.",0.65,10],
+ ["010.000.5256.00","Antibióticos","Levofloxacino","Tableta","500 mg",7,"LEVOFLOXACINO 500 mg tableta, envase con 7 tabletas.",0.65,10],
+ ["010.000.2137.00","Antimicóticos","Fluconazol","Cápsula","150 mg",1,"FLUCONAZOL 150 mg cápsula, envase con 1 cápsula.",0.35,4],
+ ["010.000.2133.00","Antimicóticos","Nistatina","Suspensión oral","100 000 U/ml",60,"NISTATINA suspensión oral 100 000 U/ml, envase con 60 ml.",1.10,40],
+ ["010.000.2138.00","Antimicóticos","Itraconazol","Cápsula","100 mg",15,"ITRACONAZOL 100 mg cápsula, envase con 15 cápsulas.",0.40,10],
+ ["010.000.1313.00","Antiparasitarios","Albendazol","Tableta","200 mg",2,"ALBENDAZOL 200 mg tableta, envase con 2 tabletas.",0.40,5],
+ ["010.000.1314.00","Antiparasitarios","Mebendazol","Tableta","100 mg",6,"MEBENDAZOL 100 mg tableta, envase con 6 tabletas.",0.25,6],
+ ["010.000.1326.00","Antiparasitarios","Metronidazol","Tableta","250 mg",30,"METRONIDAZOL 250 mg tableta, envase con 30 tabletas.",0.40,12],
+ ["010.000.2501.00","Cardiovascular","Captopril","Tableta","25 mg",30,"CAPTOPRIL 25 mg tableta, envase con 30 tabletas.",0.18,10],
+ ["010.000.2502.00","Cardiovascular","Enalapril","Tableta","10 mg",30,"ENALAPRIL 10 mg tableta, envase con 30 tabletas.",0.20,10],
+ ["010.000.2512.00","Cardiovascular","Losartán","Tableta","50 mg",30,"LOSARTÁN 50 mg tableta, envase con 30 tabletas.",0.30,12],
+ ["010.000.2520.00","Cardiovascular","Telmisartán","Tableta","40 mg",30,"TELMISARTÁN 40 mg tableta, envase con 30 tabletas.",0.30,14],
+ ["010.000.2108.00","Cardiovascular","Nifedipino","Cápsula","10 mg",30,"NIFEDIPINO 10 mg cápsula, envase con 30 cápsulas.",0.25,10],
+ ["010.000.2110.00","Cardiovascular","Nifedipino","Tableta LP","30 mg",30,"NIFEDIPINO 30 mg tableta LP, envase con 30 tabletas.",0.45,14],
+ ["010.000.2301.00","Cardiovascular","Metoprolol","Tableta","100 mg",20,"METOPROLOL 100 mg tableta, envase con 20 tabletas.",0.35,10],
+ ["010.000.2306.00","Cardiovascular","Atenolol","Tableta","100 mg",28,"ATENOLOL 100 mg tableta, envase con 28 tabletas.",0.40,12],
+ ["010.000.2307.00","Cardiovascular","Propranolol","Tableta","40 mg",30,"PROPRANOLOL 40 mg tableta, envase con 30 tabletas.",0.30,10],
+ ["010.000.2310.00","Cardiovascular","Amlodipino","Tableta","5 mg",30,"AMLODIPINO 5 mg tableta, envase con 30 tabletas.",0.25,10],
+ ["010.000.2311.00","Cardiovascular","Amlodipino","Tableta","10 mg",30,"AMLODIPINO 10 mg tableta, envase con 30 tabletas.",0.25,10],
+ ["010.000.4229.00","Hipolipemiantes","Simvastatina","Tableta","20 mg",30,"SIMVASTATINA 20 mg tableta, envase con 30 tabletas.",0.30,10],
+ ["010.000.4241.00","Hipolipemiantes","Atorvastatina","Tableta","20 mg",30,"ATORVASTATINA 20 mg tableta, envase con 30 tabletas.",0.30,12],
+ ["010.000.2609.00","SNC","Diazepam","Tableta","10 mg",20,"DIAZEPAM 10 mg tableta, envase con 20 tabletas.",0.25,8],
+ ["010.000.2611.00","SNC","Diazepam","Solución inyectable","10 mg/2 ml",50,"DIAZEPAM 10 mg/2 ml solución inyectable, envase con 50 ampolletas.",3.00,150],
+ ["010.000.3201.00","SNC","Clonazepam","Tableta","2 mg",30,"CLONAZEPAM 2 mg tableta, envase con 30 tabletas.",0.18,9],
+ ["010.000.3202.00","SNC","Alprazolam","Tableta","0.5 mg",30,"ALPRAZOLAM 0.5 mg tableta, envase con 30 tabletas.",0.18,9],
+ ["010.000.3251.00","SNC","Fenitoína","Tableta","100 mg",50,"FENITOÍNA 100 mg tableta, envase con 50 tabletas.",0.35,14],
+ ["010.000.3252.00","SNC","Fenitoína","Solución inyectable","250 mg/5 ml",5,"FENITOÍNA 250 mg/5 ml solución inyectable, envase con 5 ampolletas.",5.50,30],
+ ["010.000.2624.00","SNC","Carbamazepina","Tableta","200 mg",20,"CARBAMAZEPINA 200 mg tableta, envase con 20 tabletas.",0.45,12],
+ ["010.000.3210.00","SNC","Amitriptilina","Tableta","25 mg",20,"AMITRIPTILINA 25 mg tableta, envase con 20 tabletas.",0.20,9],
+ ["010.000.3211.00","SNC","Risperidona","Tableta","2 mg",20,"RISPERIDONA 2 mg tableta, envase con 20 tabletas.",0.22,10],
+ ["010.000.3258.00","SNC","Haloperidol","Tableta","5 mg",20,"HALOPERIDOL 5 mg tableta, envase con 20 tabletas.",0.22,10],
+ ["010.000.3259.00","SNC","Haloperidol","Solución inyectable","5 mg/ml",6,"HALOPERIDOL 5 mg/ml solución inyectable, envase con 6 ampolletas.",2.20,18],
+ ["010.000.3271.00","SNC","Fluoxetina","Cápsula","20 mg",14,"FLUOXETINA 20 mg cápsula, envase con 14 cápsulas.",0.25,8],
+ ["010.000.3290.00","SNC","Sertralina","Tableta","50 mg",14,"SERTRALINA 50 mg tableta, envase con 14 tabletas.",0.28,10],
+ ["010.000.4342.00","SNC","Ácido valproico","Tableta","200 mg",40,"ÁCIDO VALPROICO 200 mg tableta con capa entérica, envase con 40 tabletas.",0.42,16],
+ ["010.000.3608.00","Soluciones","Cloruro de sodio 0.9%","Solución inyectable","0.9%",1000,"CLORURO DE SODIO 0.9% solución inyectable, envase con 1 000 ml.",1.00,40],
+ ["010.000.3609.00","Soluciones","Cloruro de sodio 0.9%","Solución inyectable","0.9%",500,"CLORURO DE SODIO 0.9% solución inyectable, envase con 500 ml.",1.00,30],
+ ["010.000.3610.00","Soluciones","Cloruro de sodio 0.9%","Solución inyectable","0.9%",250,"CLORURO DE SODIO 0.9% solución inyectable, envase con 250 ml.",1.00,22],
+ ["010.000.3612.00","Soluciones","Glucosa 5%","Solución inyectable","5%",1000,"GLUCOSA 5% solución inyectable, envase con 1 000 ml.",1.00,40],
+ ["010.000.3614.00","Soluciones","Glucosa 5%","Solución inyectable","5%",500,"GLUCOSA 5% solución inyectable, envase con 500 ml.",1.00,30],
+ ["010.000.3626.00","Soluciones","Solución Hartmann","Solución inyectable","-",1000,"SOLUCIÓN HARTMANN, envase con 1 000 ml.",1.00,40],
+ ["010.000.3627.00","Soluciones","Solución Hartmann","Solución inyectable","-",500,"SOLUCIÓN HARTMANN, envase con 500 ml.",1.00,30],
+ ["010.000.3605.00","Soluciones","Agua inyectable","Solución inyectable","-",100,"AGUA INYECTABLE 10 ml, envase con 100 ampolletas.",10.00,180],
+ ["010.000.1701.00","Vitaminas","Ácido fólico","Tableta","0.4 mg",90,"ÁCIDO FÓLICO 0.4 mg tableta, envase con 90 tabletas.",0.15,12],
+ ["010.000.1706.00","Vitaminas","Sulfato ferroso","Tableta","200 mg",30,"SULFATO FERROSO 200 mg tableta, envase con 30 tabletas.",0.40,12],
+ ["010.000.1722.00","Vitaminas","Cianocobalamina B12","Solución inyectable","1000 mcg/ml",1,"VITAMINA B12 1 000 mcg/ml solución inyectable, envase con 1 ampolleta.",2.00,10],
+ ["010.000.3655.00","Antisépticos","Iodopovidona","Solución","11%",120,"IODOPOVIDONA 11% solución dérmica, envase con 120 ml.",1.10,50],
+ ["010.000.3656.00","Antisépticos","Clorhexidina","Solución","2%",500,"CLORHEXIDINA 2% solución, envase con 500 ml.",1.02,60],
+ ["010.000.4126.00","Antisépticos","Alcohol etílico","Solución","70%",500,"ALCOHOL ETÍLICO 70% solución, envase con 500 ml.",0.90,55],
+ ["010.000.3509.00","Anticonceptivos","Levonorgestrel + etinilestradiol","Tableta","0.15/0.03 mg",28,"LEVONORGESTREL 0.15 mg + ETINILESTRADIOL 0.03 mg tableta, envase con 28 tabletas.",0.18,9],
+ ["010.000.3505.00","Anticonceptivos","Medroxiprogesterona","Suspensión inyectable","150 mg/ml",1,"MEDROXIPROGESTERONA 150 mg/ml suspensión inyectable, envase con 1 jeringa prellenada.",2.20,18]
+];
+
+// ---------- utilidades ----------
+const LS = {
+  CAT: 'inv_catalogo',
+  LOT: 'inv_lotes',
+  MOV: 'inv_movimientos',
+  CFG: 'inv_config',
+};
+const CFG_DEFAULT = {
+  umbralVerdeMeses: 12,
+  umbralAmarilloMeses: 6,
+  umbralAvisoMeses: 3,
+  equipo: '',
+  usuarioDefault: ''
+};
+
+function uid() {
+  if (crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
+function loadLS(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn('loadLS error', key, e);
+    return fallback;
+  }
+}
+function saveLS(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
+
+function rowToCatItem(r) {
+  return {
+    clave: r[0],
+    grupo: r[1],
+    nombreGenerico: r[2],
+    presentacion: r[3],
+    concentracion: r[4],
+    unidadesPorEmpaque: Number(r[5]) || 1,
+    descripcion: r[6],
+    pesoUnitario_g: Number(r[7]) || 0,
+    pesoEmpaque_g: Number(r[8]) || 0,
+    codigoBarras: ''
+  };
+}
+
+// ---------- state ----------
+let CAT = loadLS(LS.CAT, null);
+if (!CAT || !CAT.length) {
+  CAT = CATALOGO_SEED_ROWS.map(rowToCatItem);
+  saveLS(LS.CAT, CAT);
+}
+let LOT = loadLS(LS.LOT, []);
+let MOV = loadLS(LS.MOV, []);
+let CFG = Object.assign({}, CFG_DEFAULT, loadLS(LS.CFG, {}));
+
+function persistAll() {
+  saveLS(LS.CAT, CAT);
+  saveLS(LS.LOT, LOT);
+  saveLS(LS.MOV, MOV);
+  saveLS(LS.CFG, CFG);
+}
+
+// ---------- lookups ----------
+function findCatByClave(clave) {
+  if (!clave) return null;
+  const c = String(clave).trim();
+  return CAT.find(x => x.clave === c) || null;
+}
+function findCatByCodigoBarras(code) {
+  if (!code) return null;
+  const c = String(code).trim();
+  return CAT.find(x => x.codigoBarras && x.codigoBarras === c) || null;
+}
+function findCatByScan(text) {
+  return findCatByCodigoBarras(text) || findCatByClave(text);
+}
+function lotesDeClave(clave) {
+  return LOT.filter(l => l.clave === clave).sort((a, b) => (a.caducidad || '').localeCompare(b.caducidad || ''));
+}
+function stockDeClave(clave) {
+  return lotesDeClave(clave).reduce((s, l) => s + (Number(l.cantidad) || 0), 0);
+}
+
+// ---------- semáforo ----------
+function diasRestantes(caducidadISO) {
+  if (!caducidadISO) return null;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const d = new Date(caducidadISO + 'T00:00:00');
+  return Math.round((d - hoy) / 86400000);
+}
+function mesesRestantes(caducidadISO) {
+  const d = diasRestantes(caducidadISO);
+  if (d == null) return null;
+  return d / 30.4375;
+}
+function semaforoDe(caducidadISO) {
+  const m = mesesRestantes(caducidadISO);
+  if (m == null) return { key: 'verde', label: 'Sin fecha', aviso: false };
+  if (m < 0) return { key: 'negro', label: 'Caducado', aviso: false };
+  if (m >= CFG.umbralVerdeMeses) return { key: 'verde', label: 'Verde', aviso: false };
+  if (m >= CFG.umbralAmarilloMeses) return { key: 'amarillo', label: 'Amarillo', aviso: false };
+  return { key: 'rojo', label: 'Rojo', aviso: m <= CFG.umbralAvisoMeses };
+}
+
+// ---------- pesos ----------
+function pesoLote(lote, cat) {
+  if (!cat) return 0;
+  const u = Number(cat.unidadesPorEmpaque) || 1;
+  const pu = Number(cat.pesoUnitario_g) || 0;
+  const pe = Number(cat.pesoEmpaque_g) || 0;
+  const c = Number(lote.cantidad) || 0;
+  return c * pu + Math.ceil(c / u) * pe;
+}
+function gramosLegibles(g) {
+  if (g == null || isNaN(g)) return '—';
+  if (g >= 1000) return (g / 1000).toFixed(2) + ' kg';
+  return g.toFixed(1) + ' g';
+}
+
+// ---------- mutaciones ----------
+function registrarEntrada({ clave, lote, caducidad, cantidad, nota, origen }) {
+  const cat = findCatByClave(clave);
+  if (!cat) throw new Error('Clave no encontrada en el catálogo: ' + clave);
+  cantidad = Number(cantidad);
+  if (!cantidad || cantidad <= 0) throw new Error('La cantidad debe ser mayor a 0.');
+  let existente = LOT.find(l => l.clave === clave && l.lote === lote && l.caducidad === caducidad);
+  if (existente) {
+    existente.cantidad += cantidad;
+  } else {
+    LOT.push({ id: uid(), clave, lote: lote || '-', caducidad: caducidad || '', cantidad });
+  }
+  MOV.push({
+    id: uid(),
+    tipo: 'entrada',
+    clave, lote: lote || '-', caducidad: caducidad || '',
+    cantidad,
+    fecha: new Date().toISOString(),
+    origen: origen || 'manual',
+    usuario: CFG.usuarioDefault || '',
+    nota: nota || ''
+  });
+  persistAll();
+}
+
+function registrarSalida({ clave, loteId, cantidad, nota, origen }) {
+  const cat = findCatByClave(clave);
+  if (!cat) throw new Error('Clave no encontrada en el catálogo: ' + clave);
+  cantidad = Number(cantidad);
+  if (!cantidad || cantidad <= 0) throw new Error('La cantidad debe ser mayor a 0.');
+  const lote = LOT.find(l => l.id === loteId);
+  if (!lote) throw new Error('Lote no encontrado.');
+  if (cantidad > lote.cantidad) throw new Error('Stock insuficiente en el lote (disponible: ' + lote.cantidad + ').');
+  lote.cantidad -= cantidad;
+  MOV.push({
+    id: uid(),
+    tipo: 'salida',
+    clave, lote: lote.lote, caducidad: lote.caducidad,
+    cantidad,
+    fecha: new Date().toISOString(),
+    origen: origen || 'manual',
+    usuario: CFG.usuarioDefault || '',
+    nota: nota || ''
+  });
+  if (lote.cantidad === 0) {
+    LOT = LOT.filter(l => l.id !== lote.id);
+  }
+  persistAll();
+}
+
+function fmtFechaHora(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+  } catch (e) { return iso; }
+}
+function fmtFecha(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch (e) { return iso; }
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.className = 'toast', 3200);
+}
+
+// ---------- helpers DOM ----------
+function h(tag, props, ...children) {
+  const el = document.createElement(tag);
+  if (props) {
+    for (const k in props) {
+      if (k === 'class') el.className = props[k];
+      else if (k === 'html') el.innerHTML = props[k];
+      else if (k.startsWith('on') && typeof props[k] === 'function') el.addEventListener(k.slice(2), props[k]);
+      else if (k === 'style' && typeof props[k] === 'object') Object.assign(el.style, props[k]);
+      else el.setAttribute(k, props[k]);
+    }
+  }
+  children.flat().forEach(c => {
+    if (c == null || c === false) return;
+    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return el;
+}
+function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+function datalistCatalogo() {
+  let dl = document.getElementById('dl-catalogo');
+  if (!dl) {
+    dl = document.createElement('datalist');
+    dl.id = 'dl-catalogo';
+    document.body.appendChild(dl);
+  }
+  dl.innerHTML = CAT.map(c =>
+    `<option value="${c.clave}">${c.nombreGenerico} ${c.concentracion} ${c.presentacion}</option>`
+  ).join('');
+  return dl;
+}
+
+function gruposDisponibles() {
+  return Array.from(new Set(CAT.map(c => c.grupo).filter(Boolean))).sort();
+}
+
+// ---------- Entrada ----------
+function renderEntrada() {
+  datalistCatalogo();
+  const host = document.getElementById('tab-entrada');
+  clear(host);
+
+  const scanHost = h('div', { id: 'scan-entrada', style: 'display:none' });
+
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Registrar entrada de medicamento'),
+    h('p', { class: 'field-hint' }, 'Escanea el código (cámara o lector físico) o captura manualmente. Se agrega al stock por lote y caducidad.'),
+
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-ghost', onclick: () => abrirCamara('entrada') }, '📷 Escanear cámara'),
+      h('input', { id: 'ent-scan-fisico', placeholder: 'Enfoca aquí y escanea con lector físico…', class: '', style: 'flex:1;min-width:220px;padding:9px 12px;border:1px dashed var(--verde);border-radius:8px', onkeydown: onScanFisicoEntrada })
+    ),
+
+    h('div', { class: 'fields-grid' },
+      campo('ent-clave', 'Clave', { list: 'dl-catalogo', placeholder: '010.000.XXXX.XX', onchange: actualizarDescEntrada, oninput: actualizarDescEntrada }),
+      campoDisplay('ent-desc', 'Descripción'),
+      campo('ent-lote', 'Lote', { placeholder: 'Ej. ABC1234' }),
+      campo('ent-cad', 'Caducidad', { type: 'date' }),
+      campo('ent-cant', 'Cantidad (unidades)', { type: 'number', min: 1, step: 1 }),
+      campo('ent-nota', 'Nota (opcional)')
+    ),
+
+    h('div', { class: 'toolbar', style: 'margin-top:14px' },
+      h('button', { class: 'btn btn-primary', onclick: submitEntrada }, '✔ Registrar entrada'),
+      h('button', { class: 'btn btn-secondary', onclick: limpiarEntrada }, 'Limpiar')
+    )
+  );
+
+  host.appendChild(scanHost);
+  host.appendChild(card);
+}
+
+function campo(id, label, attrs) {
+  const inp = h('input', Object.assign({ id }, attrs || {}));
+  return h('div', { class: 'field-group' }, h('label', { for: id }, label), inp);
+}
+function campoDisplay(id, label) {
+  return h('div', { class: 'field-group full' },
+    h('label', { for: id }, label),
+    h('div', { id, class: 'field-hint', style: 'padding:9px 12px;background:var(--verde-suave);border-radius:8px;min-height:38px' }, 'Selecciona una clave…')
+  );
+}
+
+function actualizarDescEntrada() {
+  const clave = document.getElementById('ent-clave').value.trim();
+  const cat = findCatByClave(clave);
+  const d = document.getElementById('ent-desc');
+  d.textContent = cat ? cat.descripcion : 'Clave no encontrada en el catálogo.';
+  d.style.color = cat ? '' : 'var(--rojo)';
+}
+
+function submitEntrada() {
+  try {
+    registrarEntrada({
+      clave: document.getElementById('ent-clave').value.trim(),
+      lote: document.getElementById('ent-lote').value.trim(),
+      caducidad: document.getElementById('ent-cad').value,
+      cantidad: document.getElementById('ent-cant').value,
+      nota: document.getElementById('ent-nota').value.trim(),
+      origen: 'manual'
+    });
+    toast('Entrada registrada.');
+    limpiarEntrada();
+  } catch (e) { toast(e.message, 'error'); }
+}
+function limpiarEntrada() {
+  ['ent-clave', 'ent-lote', 'ent-cad', 'ent-cant', 'ent-nota', 'ent-scan-fisico'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const d = document.getElementById('ent-desc');
+  if (d) { d.textContent = 'Selecciona una clave…'; d.style.color = ''; }
+}
+function onScanFisicoEntrada(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const val = e.target.value.trim();
+  const cat = findCatByScan(val);
+  if (cat) {
+    document.getElementById('ent-clave').value = cat.clave;
+    actualizarDescEntrada();
+    toast('Lectura: ' + cat.clave);
+  } else {
+    document.getElementById('ent-clave').value = val;
+    actualizarDescEntrada();
+    toast('Código no encontrado; se copió al campo clave.', 'warn');
+  }
+  e.target.value = '';
+}
+
+// ---------- Salida ----------
+function renderSalida() {
+  datalistCatalogo();
+  const host = document.getElementById('tab-salida');
+  clear(host);
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Registrar salida de medicamento'),
+    h('p', { class: 'field-hint' }, 'Se sugiere FEFO (caducidad más próxima primero). No permite dejar stock negativo.'),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-ghost', onclick: () => abrirCamara('salida') }, '📷 Escanear cámara'),
+      h('input', { id: 'sal-scan-fisico', placeholder: 'Enfoca aquí y escanea con lector físico…', style: 'flex:1;min-width:220px;padding:9px 12px;border:1px dashed var(--verde);border-radius:8px', onkeydown: onScanFisicoSalida })
+    ),
+    h('div', { class: 'fields-grid' },
+      campo('sal-clave', 'Clave', { list: 'dl-catalogo', placeholder: '010.000.XXXX.XX', onchange: refrescarLotesSalida, oninput: refrescarLotesSalida }),
+      campoDisplay('sal-desc', 'Descripción'),
+      loteSelectField(),
+      campo('sal-cant', 'Cantidad a salir (unidades)', { type: 'number', min: 1, step: 1 }),
+      campo('sal-nota', 'Nota / destino (opcional)', { placeholder: 'Ej. Jornada quirófano 2' })
+    ),
+    h('div', { class: 'toolbar', style: 'margin-top:14px' },
+      h('button', { class: 'btn btn-primary', onclick: submitSalida }, '✔ Registrar salida'),
+      h('button', { class: 'btn btn-secondary', onclick: limpiarSalida }, 'Limpiar')
+    )
+  );
+  host.appendChild(card);
+}
+function loteSelectField() {
+  return h('div', { class: 'field-group' },
+    h('label', { for: 'sal-lote' }, 'Lote disponible (FEFO)'),
+    h('select', { id: 'sal-lote' },
+      h('option', { value: '' }, 'Selecciona clave primero…')
+    )
+  );
+}
+function refrescarLotesSalida() {
+  const clave = document.getElementById('sal-clave').value.trim();
+  const cat = findCatByClave(clave);
+  const d = document.getElementById('sal-desc');
+  d.textContent = cat ? cat.descripcion : 'Clave no encontrada en el catálogo.';
+  d.style.color = cat ? '' : 'var(--rojo)';
+  const sel = document.getElementById('sal-lote');
+  clear(sel);
+  if (!cat) { sel.appendChild(h('option', { value: '' }, 'Selecciona clave válida…')); return; }
+  const lotes = lotesDeClave(clave);
+  if (!lotes.length) { sel.appendChild(h('option', { value: '' }, 'Sin stock para esta clave')); return; }
+  sel.appendChild(h('option', { value: '' }, 'Selecciona lote…'));
+  lotes.forEach(l => {
+    const s = semaforoDe(l.caducidad);
+    const txt = `Lote ${l.lote} · Cad ${fmtFecha(l.caducidad) || 's/f'} · ${l.cantidad} pz · ${s.label}`;
+    sel.appendChild(h('option', { value: l.id }, txt));
+  });
+}
+function submitSalida() {
+  try {
+    registrarSalida({
+      clave: document.getElementById('sal-clave').value.trim(),
+      loteId: document.getElementById('sal-lote').value,
+      cantidad: document.getElementById('sal-cant').value,
+      nota: document.getElementById('sal-nota').value.trim(),
+      origen: 'manual'
+    });
+    toast('Salida registrada.');
+    limpiarSalida();
+  } catch (e) { toast(e.message, 'error'); }
+}
+function limpiarSalida() {
+  ['sal-clave', 'sal-cant', 'sal-nota', 'sal-scan-fisico'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('sal-lote').innerHTML = '<option value="">Selecciona clave primero…</option>';
+  const d = document.getElementById('sal-desc');
+  if (d) { d.textContent = 'Selecciona una clave…'; d.style.color = ''; }
+}
+function onScanFisicoSalida(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const val = e.target.value.trim();
+  const cat = findCatByScan(val);
+  if (cat) {
+    document.getElementById('sal-clave').value = cat.clave;
+    refrescarLotesSalida();
+    toast('Lectura: ' + cat.clave);
+  } else {
+    document.getElementById('sal-clave').value = val;
+    refrescarLotesSalida();
+    toast('Código no encontrado; se copió al campo clave.', 'warn');
+  }
+  e.target.value = '';
+}
+
+// ---------- Stock ----------
+function renderStock() {
+  const host = document.getElementById('tab-stock');
+  clear(host);
+
+  const filtroGrupo = h('select', { id: 'st-grupo', onchange: renderStock }, h('option', { value: '' }, 'Todos los grupos'),
+    ...gruposDisponibles().map(g => h('option', { value: g, selected: (window._stFiltro && window._stFiltro.grupo === g) ? 'selected' : null }, g)));
+  const filtroColor = h('select', { id: 'st-color', onchange: renderStock },
+    h('option', { value: '' }, 'Todos los colores'),
+    h('option', { value: 'verde' }, 'Verde'),
+    h('option', { value: 'amarillo' }, 'Amarillo'),
+    h('option', { value: 'rojo' }, 'Rojo'),
+    h('option', { value: 'negro' }, 'Caducados (negro)')
+  );
+  const filtroTxt = h('input', { id: 'st-q', placeholder: 'Buscar por clave, descripción o lote…', oninput: renderStock });
+  window._stFiltro = window._stFiltro || {};
+
+  // aplicar valores actuales
+  setTimeout(() => {
+    if (window._stFiltro.grupo != null) filtroGrupo.value = window._stFiltro.grupo;
+    if (window._stFiltro.color != null) filtroColor.value = window._stFiltro.color;
+    if (window._stFiltro.q != null) filtroTxt.value = window._stFiltro.q;
+  }, 0);
+
+  const tb = h('tbody');
+  const tabla = h('table',
+    null,
+    h('thead', null,
+      h('tr', null,
+        ['Clave', 'Descripción', 'Grupo', 'Lote', 'Caducidad', 'Días', 'Semáforo', 'Cantidad', 'Peso unit. (g)', 'Peso total'].map(t => h('th', null, t))
+      )
+    ),
+    tb
+  );
+
+  const q = (filtroTxt.value || '').toLowerCase();
+  const grupoSel = filtroGrupo.value;
+  const colorSel = filtroColor.value;
+
+  let totalPiezas = 0, totalPeso = 0, filas = 0;
+  const rows = LOT.map(l => {
+    const cat = findCatByClave(l.clave);
+    const sem = semaforoDe(l.caducidad);
+    const peso = pesoLote(l, cat);
+    return { l, cat, sem, peso };
+  }).filter(({ l, cat, sem }) => {
+    if (grupoSel && (!cat || cat.grupo !== grupoSel)) return false;
+    if (colorSel && sem.key !== colorSel) return false;
+    if (q) {
+      const t = (l.clave + ' ' + (cat ? cat.descripcion : '') + ' ' + l.lote).toLowerCase();
+      if (!t.includes(q)) return false;
+    }
+    return true;
+  }).sort((a, b) => (a.l.caducidad || '').localeCompare(b.l.caducidad || ''));
+
+  rows.forEach(({ l, cat, sem, peso }) => {
+    filas++;
+    totalPiezas += l.cantidad;
+    totalPeso += peso;
+    const d = diasRestantes(l.caducidad);
+    const tr = h('tr', { class: sem.key === 'negro' ? 'row-caducado' : '' },
+      h('td', null, l.clave),
+      h('td', null, cat ? cat.descripcion : '(fuera de catálogo)'),
+      h('td', null, cat ? cat.grupo : ''),
+      h('td', null, l.lote),
+      h('td', null, fmtFecha(l.caducidad) || '—'),
+      h('td', null, d == null ? '—' : String(d)),
+      h('td', null, h('span', { class: 'sem sem-' + sem.key }, sem.label), sem.aviso ? h('span', { class: 'sem-aviso' }, '≤3m') : null),
+      h('td', null, String(l.cantidad)),
+      h('td', null, cat ? cat.pesoUnitario_g.toFixed(2) : '—'),
+      h('td', null, gramosLegibles(peso))
+    );
+    tb.appendChild(tr);
+  });
+
+  const kpis = h('div', { class: 'kpi-grid' },
+    kpi('Lotes visibles', String(filas)),
+    kpi('Piezas totales', totalPiezas.toLocaleString('es-MX')),
+    kpi('Peso total', gramosLegibles(totalPeso)),
+    kpi('Claves distintas', String(new Set(rows.map(r => r.l.clave)).size))
+  );
+
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Stock actual por lote'),
+    h('div', { class: 'filter-bar' },
+      h('div', { class: 'field-group' }, h('label', null, 'Grupo'), filtroGrupo),
+      h('div', { class: 'field-group' }, h('label', null, 'Color'), filtroColor),
+      h('div', { class: 'field-group', style: 'flex:1;min-width:220px' }, h('label', null, 'Buscar'), filtroTxt),
+    ),
+    kpis,
+    h('div', { class: 'table-wrap' }, tabla)
+  );
+  host.appendChild(card);
+}
+function kpi(label, value) {
+  return h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, String(value)));
+}
+
+// ---------- Historial ----------
+function renderHistorial() {
+  const host = document.getElementById('tab-historial');
+  clear(host);
+  const ftipo = h('select', { onchange: renderHistorial, id: 'h-tipo' },
+    h('option', { value: '' }, 'Entradas y salidas'),
+    h('option', { value: 'entrada' }, 'Sólo entradas'),
+    h('option', { value: 'salida' }, 'Sólo salidas')
+  );
+  const fdesde = h('input', { type: 'date', id: 'h-desde', onchange: renderHistorial });
+  const fhasta = h('input', { type: 'date', id: 'h-hasta', onchange: renderHistorial });
+  const fq = h('input', { id: 'h-q', placeholder: 'Buscar clave/lote/nota…', oninput: renderHistorial });
+
+  const tipo = ftipo.value;
+  const desde = fdesde.value;
+  const hasta = fhasta.value;
+  const q = (fq.value || '').toLowerCase();
+
+  const tb = h('tbody');
+  const filtered = MOV.slice().sort((a, b) => b.fecha.localeCompare(a.fecha)).filter(m => {
+    if (tipo && m.tipo !== tipo) return false;
+    if (desde && m.fecha.slice(0, 10) < desde) return false;
+    if (hasta && m.fecha.slice(0, 10) > hasta) return false;
+    if (q) {
+      const t = (m.clave + ' ' + (m.lote || '') + ' ' + (m.nota || '') + ' ' + (m.usuario || '')).toLowerCase();
+      if (!t.includes(q)) return false;
+    }
+    return true;
+  });
+
+  let totalE = 0, totalS = 0;
+  filtered.forEach(m => {
+    const cat = findCatByClave(m.clave);
+    if (m.tipo === 'entrada') totalE += m.cantidad; else totalS += m.cantidad;
+    const tr = h('tr', null,
+      h('td', null, fmtFechaHora(m.fecha)),
+      h('td', null, h('span', { class: 'badge' + (m.tipo === 'salida' ? ' badge-red' : '') }, m.tipo)),
+      h('td', null, m.clave),
+      h('td', null, cat ? cat.nombreGenerico + ' ' + cat.concentracion : ''),
+      h('td', null, m.lote || '—'),
+      h('td', null, fmtFecha(m.caducidad) || '—'),
+      h('td', null, String(m.cantidad)),
+      h('td', null, m.origen),
+      h('td', null, m.usuario || ''),
+      h('td', null, m.nota || '')
+    );
+    tb.appendChild(tr);
+  });
+  const tabla = h('table', null,
+    h('thead', null, h('tr', null,
+      ['Fecha', 'Tipo', 'Clave', 'Medicamento', 'Lote', 'Caducidad', 'Cantidad', 'Origen', 'Usuario', 'Nota'].map(t => h('th', null, t))
+    )),
+    tb
+  );
+
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Historial de movimientos'),
+    h('div', { class: 'filter-bar' },
+      h('div', { class: 'field-group' }, h('label', null, 'Tipo'), ftipo),
+      h('div', { class: 'field-group' }, h('label', null, 'Desde'), fdesde),
+      h('div', { class: 'field-group' }, h('label', null, 'Hasta'), fhasta),
+      h('div', { class: 'field-group', style: 'flex:1;min-width:200px' }, h('label', null, 'Buscar'), fq)
+    ),
+    h('div', { class: 'kpi-grid' },
+      kpi('Movimientos', String(filtered.length)),
+      kpi('Piezas de entrada', totalE.toLocaleString('es-MX')),
+      kpi('Piezas de salida', totalS.toLocaleString('es-MX')),
+      kpi('Total en historial', String(MOV.length))
+    ),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-ghost', onclick: () => exportarHistorialExcel(filtered) }, '⬇ Exportar filtrado a Excel')
+    ),
+    h('div', { class: 'table-wrap' }, tabla)
+  );
+  host.appendChild(card);
+}
+
+// ---------- Catálogo ----------
+function renderCatalogo() {
+  const host = document.getElementById('tab-catalogo');
+  clear(host);
+  const fq = h('input', { id: 'c-q', placeholder: 'Buscar clave, nombre o grupo…', oninput: renderCatalogo });
+  const q = (fq.value || '').toLowerCase();
+
+  const tb = h('tbody');
+  const rows = CAT.slice().sort((a, b) => a.clave.localeCompare(b.clave)).filter(c => {
+    if (!q) return true;
+    const t = (c.clave + ' ' + c.nombreGenerico + ' ' + c.descripcion + ' ' + (c.grupo || '')).toLowerCase();
+    return t.includes(q);
+  });
+  rows.forEach(c => {
+    const tr = h('tr', null,
+      h('td', null, c.clave),
+      h('td', null, c.nombreGenerico),
+      h('td', null, c.concentracion),
+      h('td', null, c.presentacion),
+      h('td', null, String(c.unidadesPorEmpaque)),
+      h('td', null, c.grupo),
+      h('td', null, String(c.pesoUnitario_g)),
+      h('td', null, String(c.pesoEmpaque_g)),
+      h('td', null, c.codigoBarras || ''),
+      h('td', null,
+        h('button', { class: 'btn btn-sm btn-secondary', onclick: () => editarCatalogo(c.clave) }, 'Editar'),
+        ' ',
+        h('button', { class: 'btn btn-sm btn-danger', onclick: () => eliminarCatalogo(c.clave) }, '✕')
+      )
+    );
+    tb.appendChild(tr);
+  });
+  const tabla = h('table', null,
+    h('thead', null, h('tr', null,
+      ['Clave', 'Genérico', 'Concentración', 'Presentación', 'U/Empaque', 'Grupo', 'Peso u. (g)', 'Peso empaq. (g)', 'Cód. barras', ''].map(t => h('th', null, t))
+    )),
+    tb
+  );
+
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Catálogo de medicamentos'),
+    h('p', { class: 'field-hint' }, CAT.length + ' claves cargadas. Base semilla del Cuadro Básico IMSS-BIENESTAR / Secretaría de Salud, editable.'),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-primary', onclick: () => editarCatalogo(null) }, '➕ Nueva clave'),
+      h('button', { class: 'btn btn-ghost', onclick: importarCatalogoXLSX }, '⬆ Importar Excel'),
+      h('button', { class: 'btn btn-ghost', onclick: importarCatalogoJSON }, '⬆ Importar JSON'),
+      h('button', { class: 'btn btn-ghost', onclick: exportarCatalogoXLSX }, '⬇ Exportar Excel'),
+      h('button', { class: 'btn btn-ghost', onclick: exportarCatalogoJSON }, '⬇ Exportar JSON')
+    ),
+    h('div', { class: 'filter-bar' },
+      h('div', { class: 'field-group', style: 'flex:1' }, h('label', null, 'Buscar'), fq)
+    ),
+    h('div', { class: 'table-wrap' }, tabla)
+  );
+  host.appendChild(card);
+}
+
+function editarCatalogo(clave) {
+  const c = clave ? findCatByClave(clave) : { clave: '', grupo: '', nombreGenerico: '', presentacion: '', concentracion: '', unidadesPorEmpaque: 1, descripcion: '', pesoUnitario_g: 0, pesoEmpaque_g: 0, codigoBarras: '' };
+  if (clave && !c) { toast('Clave no encontrada', 'error'); return; }
+  const form = h('div', { class: 'fields-grid' },
+    campoPreset('ec-clave', 'Clave', c.clave, !!clave),
+    campoPreset('ec-gen', 'Nombre genérico', c.nombreGenerico),
+    campoPreset('ec-pres', 'Presentación', c.presentacion),
+    campoPreset('ec-conc', 'Concentración', c.concentracion),
+    campoPreset('ec-grp', 'Grupo terapéutico', c.grupo),
+    campoPreset('ec-upe', 'Unidades por empaque', c.unidadesPorEmpaque, false, 'number'),
+    campoPreset('ec-pu', 'Peso unitario (g)', c.pesoUnitario_g, false, 'number'),
+    campoPreset('ec-pe', 'Peso empaque (g)', c.pesoEmpaque_g, false, 'number'),
+    campoPreset('ec-cb', 'Código de barras', c.codigoBarras),
+    h('div', { class: 'field-group full' },
+      h('label', null, 'Descripción oficial'),
+      h('textarea', { id: 'ec-desc', rows: 2, style: 'padding:9px 12px;border:1px solid var(--borde);border-radius:8px' }, c.descripcion)
+    )
+  );
+  abrirModal((clave ? 'Editar clave ' + clave : 'Nueva clave'), form, () => {
+    const nuevo = {
+      clave: document.getElementById('ec-clave').value.trim(),
+      nombreGenerico: document.getElementById('ec-gen').value.trim(),
+      presentacion: document.getElementById('ec-pres').value.trim(),
+      concentracion: document.getElementById('ec-conc').value.trim(),
+      grupo: document.getElementById('ec-grp').value.trim(),
+      unidadesPorEmpaque: Number(document.getElementById('ec-upe').value) || 1,
+      pesoUnitario_g: Number(document.getElementById('ec-pu').value) || 0,
+      pesoEmpaque_g: Number(document.getElementById('ec-pe').value) || 0,
+      codigoBarras: document.getElementById('ec-cb').value.trim(),
+      descripcion: document.getElementById('ec-desc').value.trim()
+    };
+    if (!nuevo.clave) { toast('La clave es obligatoria', 'error'); return false; }
+    const idx = CAT.findIndex(x => x.clave === nuevo.clave);
+    if (idx >= 0) CAT[idx] = Object.assign(CAT[idx], nuevo);
+    else CAT.push(nuevo);
+    persistAll();
+    renderCatalogo();
+    toast(clave ? 'Clave actualizada' : 'Clave agregada');
+    return true;
+  });
+}
+function campoPreset(id, label, val, readonly, type) {
+  const attrs = { id };
+  if (readonly) attrs.readonly = 'readonly';
+  if (type) attrs.type = type;
+  attrs.value = val == null ? '' : val;
+  return h('div', { class: 'field-group' }, h('label', { for: id }, label), h('input', attrs));
+}
+function eliminarCatalogo(clave) {
+  if (!confirm('¿Eliminar la clave ' + clave + ' del catálogo? Los lotes y movimientos existentes no se borran.')) return;
+  CAT = CAT.filter(c => c.clave !== clave);
+  persistAll();
+  renderCatalogo();
+  toast('Clave eliminada');
+}
+
+// ---------- Respaldo / Transferir ----------
+function renderBackup() {
+  const host = document.getElementById('tab-backup');
+  clear(host);
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Respaldo y transferencia entre equipos'),
+    h('p', { class: 'field-hint' }, 'Exporta un paquete completo (catálogo + lotes + movimientos + ajustes) y restáuralo en otro equipo. También puedes intercambiar sólo hojas específicas en Excel.'),
+    h('div', { class: 'kpi-grid' },
+      kpi('Claves en catálogo', String(CAT.length)),
+      kpi('Lotes activos', String(LOT.length)),
+      kpi('Movimientos', String(MOV.length)),
+      kpi('Equipo', CFG.equipo || '(sin nombre)')
+    ),
+    h('h3', null, 'Exportar'),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-primary', onclick: exportarPaqueteJSON }, '⬇ Paquete JSON completo'),
+      h('button', { class: 'btn btn-primary', onclick: exportarPaqueteXLSX }, '⬇ Paquete Excel (multi-hoja)')
+    ),
+    h('h3', null, 'Importar'),
+    h('p', { class: 'field-hint' }, 'Si eliges "Reemplazar" se sobrescribe toda la base local. "Mezclar" hace upsert por clave (catálogo) y por id (lotes, movimientos, config).'),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-ghost', onclick: () => importarPaqueteJSON('reemplazar') }, '⬆ JSON (reemplazar)'),
+      h('button', { class: 'btn btn-ghost', onclick: () => importarPaqueteJSON('mezclar') }, '⬆ JSON (mezclar)'),
+      h('button', { class: 'btn btn-ghost', onclick: () => importarPaqueteXLSX('reemplazar') }, '⬆ Excel (reemplazar)'),
+      h('button', { class: 'btn btn-ghost', onclick: () => importarPaqueteXLSX('mezclar') }, '⬆ Excel (mezclar)')
+    ),
+    h('h3', null, 'Zona peligrosa'),
+    h('div', { class: 'toolbar' },
+      h('button', { class: 'btn btn-danger', onclick: reiniciarTodo }, '🗑 Reiniciar todo')
+    )
+  );
+  host.appendChild(card);
+}
+function reiniciarTodo() {
+  if (!confirm('Esto borra TODO (catálogo, lotes, movimientos, ajustes) de este equipo. ¿Continuar?')) return;
+  [LS.CAT, LS.LOT, LS.MOV, LS.CFG].forEach(k => localStorage.removeItem(k));
+  CAT = CATALOGO_SEED_ROWS.map(rowToCatItem);
+  LOT = []; MOV = []; CFG = Object.assign({}, CFG_DEFAULT);
+  persistAll();
+  toast('Base reiniciada.');
+  renderAll();
+}
+
+// ---------- Ajustes ----------
+function renderAjustes() {
+  const host = document.getElementById('tab-ajustes');
+  clear(host);
+  const card = h('div', { class: 'section-card' },
+    h('h2', null, 'Ajustes'),
+    h('h3', null, 'Semáforo de caducidad'),
+    h('p', { class: 'field-hint' }, 'Umbrales expresados en meses. Caducados siempre se marcan en negro.'),
+    h('div', { class: 'fields-grid' },
+      campoPreset('cfg-verde', 'Verde ≥ meses', CFG.umbralVerdeMeses, false, 'number'),
+      campoPreset('cfg-amar', 'Amarillo ≥ meses', CFG.umbralAmarilloMeses, false, 'number'),
+      campoPreset('cfg-aviso', 'Aviso "próximo a caducar" ≤ meses', CFG.umbralAvisoMeses, false, 'number')
+    ),
+    h('h3', null, 'Identificación del equipo'),
+    h('div', { class: 'fields-grid' },
+      campoPreset('cfg-equipo', 'Nombre/ubicación del equipo', CFG.equipo),
+      campoPreset('cfg-user', 'Usuario por defecto', CFG.usuarioDefault)
+    ),
+    h('div', { class: 'toolbar', style: 'margin-top:14px' },
+      h('button', { class: 'btn btn-primary', onclick: guardarAjustes }, '💾 Guardar ajustes')
+    )
+  );
+  host.appendChild(card);
+}
+function guardarAjustes() {
+  CFG.umbralVerdeMeses = Number(document.getElementById('cfg-verde').value) || 12;
+  CFG.umbralAmarilloMeses = Number(document.getElementById('cfg-amar').value) || 6;
+  CFG.umbralAvisoMeses = Number(document.getElementById('cfg-aviso').value) || 3;
+  CFG.equipo = document.getElementById('cfg-equipo').value.trim();
+  CFG.usuarioDefault = document.getElementById('cfg-user').value.trim();
+  if (CFG.umbralVerdeMeses <= CFG.umbralAmarilloMeses) {
+    toast('El umbral verde debe ser mayor al amarillo.', 'error'); return;
+  }
+  persistAll();
+  toast('Ajustes guardados.');
+  renderAll();
+}
+
+// ---------- Modal genérico ----------
+function abrirModal(titulo, bodyEl, onAccept) {
+  const host = document.getElementById('modal-generic');
+  clear(host);
+  host.appendChild(h('h3', null, titulo));
+  host.appendChild(bodyEl);
+  const actions = h('div', { class: 'actions' },
+    h('button', { class: 'btn btn-secondary', onclick: cerrarModal }, 'Cancelar'),
+    h('button', { class: 'btn btn-primary', onclick: () => { if (onAccept() !== false) cerrarModal(); } }, 'Aceptar')
+  );
+  host.appendChild(actions);
+  document.getElementById('overlay-generic').classList.add('show');
+}
+function cerrarModal() {
+  document.getElementById('overlay-generic').classList.remove('show');
+}
+
+// ---------- Tabs ----------
+function switchTab(tab) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.tab === tab));
+  document.querySelectorAll('.iTab').forEach(s => s.classList.toggle('active', s.id === 'tab-' + tab));
+  if (tab === 'entrada') renderEntrada();
+  else if (tab === 'salida') renderSalida();
+  else if (tab === 'stock') renderStock();
+  else if (tab === 'historial') renderHistorial();
+  else if (tab === 'catalogo') renderCatalogo();
+  else if (tab === 'backup') renderBackup();
+  else if (tab === 'ajustes') renderAjustes();
+}
+function renderAll() {
+  document.querySelectorAll('.iTab').forEach(s => clear(s));
+  const active = document.querySelector('.pill.active');
+  switchTab(active ? active.dataset.tab : 'entrada');
+}
+
+// ---------- descarga y lectura de archivos ----------
+function descargar(nombre, blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+function pickFile(accept) {
+  return new Promise(resolve => {
+    const i = document.createElement('input');
+    i.type = 'file';
+    i.accept = accept;
+    i.onchange = () => resolve(i.files && i.files[0]);
+    i.click();
+  });
+}
+function leerArchivoComoBuffer(f) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsArrayBuffer(f);
+  });
+}
+function leerArchivoComoTexto(f) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsText(f);
+  });
+}
+const fechaArchivo = () => new Date().toISOString().slice(0, 10);
+
+// ---------- Exportar catálogo ----------
+function exportarCatalogoJSON() {
+  const blob = new Blob([JSON.stringify(CAT, null, 2)], { type: 'application/json' });
+  descargar('catalogo_' + fechaArchivo() + '.json', blob);
+  toast('Catálogo exportado.');
+}
+function exportarCatalogoXLSX() {
+  const ws = XLSX.utils.json_to_sheet(CAT.map(c => ({
+    Clave: c.clave, 'Nombre genérico': c.nombreGenerico, Concentración: c.concentracion,
+    Presentación: c.presentacion, 'Unidades por empaque': c.unidadesPorEmpaque,
+    Grupo: c.grupo, 'Peso unitario (g)': c.pesoUnitario_g, 'Peso empaque (g)': c.pesoEmpaque_g,
+    'Código de barras': c.codigoBarras || '', Descripción: c.descripcion
+  })));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Catalogo');
+  XLSX.writeFile(wb, 'catalogo_' + fechaArchivo() + '.xlsx');
+  toast('Catálogo exportado.');
+}
+
+// ---------- Importar catálogo ----------
+async function importarCatalogoJSON() {
+  const f = await pickFile('.json,application/json');
+  if (!f) return;
+  try {
+    const txt = await leerArchivoComoTexto(f);
+    const data = JSON.parse(txt);
+    if (!Array.isArray(data)) throw new Error('El JSON debe ser un arreglo de medicamentos.');
+    mezclarCatalogo(data);
+    toast('Catálogo importado (' + data.length + ' filas).');
+    renderCatalogo();
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+async function importarCatalogoXLSX() {
+  const f = await pickFile('.xlsx,.xls');
+  if (!f) return;
+  try {
+    const buf = await leerArchivoComoBuffer(f);
+    const wb = XLSX.read(buf, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames.find(n => /cat/i.test(n)) || wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    const mapped = rows.map(r => ({
+      clave: String(r.Clave || r.clave || '').trim(),
+      nombreGenerico: String(r['Nombre genérico'] || r.nombreGenerico || '').trim(),
+      concentracion: String(r['Concentración'] || r.concentracion || '').trim(),
+      presentacion: String(r['Presentación'] || r.presentacion || '').trim(),
+      unidadesPorEmpaque: Number(r['Unidades por empaque'] || r.unidadesPorEmpaque || 1) || 1,
+      grupo: String(r.Grupo || r.grupo || '').trim(),
+      pesoUnitario_g: Number(r['Peso unitario (g)'] || r.pesoUnitario_g || 0) || 0,
+      pesoEmpaque_g: Number(r['Peso empaque (g)'] || r.pesoEmpaque_g || 0) || 0,
+      codigoBarras: String(r['Código de barras'] || r.codigoBarras || '').trim(),
+      descripcion: String(r['Descripción'] || r.descripcion || '').trim()
+    })).filter(x => x.clave);
+    mezclarCatalogo(mapped);
+    toast('Catálogo importado (' + mapped.length + ' filas).');
+    renderCatalogo();
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+function mezclarCatalogo(arr) {
+  arr.forEach(n => {
+    const idx = CAT.findIndex(x => x.clave === n.clave);
+    if (idx >= 0) CAT[idx] = Object.assign(CAT[idx], n);
+    else CAT.push(n);
+  });
+  persistAll();
+}
+
+// ---------- Exportar paquete completo ----------
+function paqueteActual() {
+  return {
+    version: 1,
+    exportadoEn: new Date().toISOString(),
+    equipo: CFG.equipo || '',
+    catalogo: CAT,
+    lotes: LOT,
+    movimientos: MOV,
+    config: CFG
+  };
+}
+function exportarPaqueteJSON() {
+  const blob = new Blob([JSON.stringify(paqueteActual(), null, 2)], { type: 'application/json' });
+  descargar('inventario_' + (CFG.equipo || 'equipo') + '_' + fechaArchivo() + '.json', blob);
+  toast('Paquete exportado.');
+}
+function exportarPaqueteXLSX() {
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(CAT.map(c => ({
+    Clave: c.clave, 'Nombre genérico': c.nombreGenerico, Concentración: c.concentracion,
+    Presentación: c.presentacion, 'Unidades por empaque': c.unidadesPorEmpaque,
+    Grupo: c.grupo, 'Peso unitario (g)': c.pesoUnitario_g, 'Peso empaque (g)': c.pesoEmpaque_g,
+    'Código de barras': c.codigoBarras || '', Descripción: c.descripcion
+  }))), 'Catalogo');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(LOT.map(l => ({
+    id: l.id, Clave: l.clave, Lote: l.lote, Caducidad: l.caducidad, Cantidad: l.cantidad
+  }))), 'Lotes');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(MOV.map(m => ({
+    id: m.id, Fecha: m.fecha, Tipo: m.tipo, Clave: m.clave, Lote: m.lote,
+    Caducidad: m.caducidad, Cantidad: m.cantidad, Origen: m.origen, Usuario: m.usuario, Nota: m.nota
+  }))), 'Movimientos');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([{
+    umbralVerdeMeses: CFG.umbralVerdeMeses, umbralAmarilloMeses: CFG.umbralAmarilloMeses,
+    umbralAvisoMeses: CFG.umbralAvisoMeses, equipo: CFG.equipo, usuarioDefault: CFG.usuarioDefault
+  }]), 'Config');
+  XLSX.writeFile(wb, 'inventario_' + (CFG.equipo || 'equipo') + '_' + fechaArchivo() + '.xlsx');
+  toast('Paquete exportado.');
+}
+function exportarHistorialExcel(rows) {
+  const ws = XLSX.utils.json_to_sheet(rows.map(m => ({
+    Fecha: m.fecha, Tipo: m.tipo, Clave: m.clave, Lote: m.lote, Caducidad: m.caducidad,
+    Cantidad: m.cantidad, Origen: m.origen, Usuario: m.usuario, Nota: m.nota
+  })));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+  XLSX.writeFile(wb, 'historial_' + fechaArchivo() + '.xlsx');
+  toast('Historial exportado.');
+}
+
+// ---------- Importar paquete completo ----------
+async function importarPaqueteJSON(modo) {
+  const f = await pickFile('.json,application/json');
+  if (!f) return;
+  try {
+    const data = JSON.parse(await leerArchivoComoTexto(f));
+    aplicarPaquete(data, modo);
+    toast('Paquete importado (' + modo + ').');
+    renderAll();
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+async function importarPaqueteXLSX(modo) {
+  const f = await pickFile('.xlsx,.xls');
+  if (!f) return;
+  try {
+    const buf = await leerArchivoComoBuffer(f);
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheetAs = (re) => {
+      const name = wb.SheetNames.find(n => re.test(n));
+      return name ? XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: '' }) : [];
+    };
+    const catRows = sheetAs(/cat/i).map(r => ({
+      clave: String(r.Clave || r.clave || '').trim(),
+      nombreGenerico: String(r['Nombre genérico'] || '').trim(),
+      concentracion: String(r['Concentración'] || '').trim(),
+      presentacion: String(r['Presentación'] || '').trim(),
+      unidadesPorEmpaque: Number(r['Unidades por empaque'] || 1) || 1,
+      grupo: String(r.Grupo || '').trim(),
+      pesoUnitario_g: Number(r['Peso unitario (g)'] || 0) || 0,
+      pesoEmpaque_g: Number(r['Peso empaque (g)'] || 0) || 0,
+      codigoBarras: String(r['Código de barras'] || '').trim(),
+      descripcion: String(r['Descripción'] || '').trim()
+    })).filter(x => x.clave);
+    const lotRows = sheetAs(/lote/i).map(r => ({
+      id: String(r.id || uid()),
+      clave: String(r.Clave || '').trim(),
+      lote: String(r.Lote || '').trim(),
+      caducidad: typeof r.Caducidad === 'number' ? excelFechaISO(r.Caducidad) : String(r.Caducidad || '').slice(0, 10),
+      cantidad: Number(r.Cantidad) || 0
+    })).filter(x => x.clave && x.cantidad > 0);
+    const movRows = sheetAs(/movim/i).map(r => ({
+      id: String(r.id || uid()),
+      fecha: String(r.Fecha || new Date().toISOString()),
+      tipo: String(r.Tipo || 'entrada'),
+      clave: String(r.Clave || '').trim(),
+      lote: String(r.Lote || ''),
+      caducidad: typeof r.Caducidad === 'number' ? excelFechaISO(r.Caducidad) : String(r.Caducidad || '').slice(0, 10),
+      cantidad: Number(r.Cantidad) || 0,
+      origen: String(r.Origen || 'manual'),
+      usuario: String(r.Usuario || ''),
+      nota: String(r.Nota || '')
+    })).filter(x => x.clave);
+    const cfgRows = sheetAs(/config/i);
+    const cfg = cfgRows[0] || {};
+    aplicarPaquete({
+      catalogo: catRows, lotes: lotRows, movimientos: movRows,
+      config: {
+        umbralVerdeMeses: Number(cfg.umbralVerdeMeses) || CFG.umbralVerdeMeses,
+        umbralAmarilloMeses: Number(cfg.umbralAmarilloMeses) || CFG.umbralAmarilloMeses,
+        umbralAvisoMeses: Number(cfg.umbralAvisoMeses) || CFG.umbralAvisoMeses,
+        equipo: String(cfg.equipo || CFG.equipo),
+        usuarioDefault: String(cfg.usuarioDefault || CFG.usuarioDefault)
+      }
+    }, modo);
+    toast('Paquete Excel importado (' + modo + ').');
+    renderAll();
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+function excelFechaISO(serial) {
+  // SheetJS devuelve número de serie de Excel si no hay cellDates
+  const d = new Date(Math.round((serial - 25569) * 86400 * 1000));
+  return isNaN(d) ? '' : d.toISOString().slice(0, 10);
+}
+function aplicarPaquete(pkg, modo) {
+  if (!pkg || typeof pkg !== 'object') throw new Error('Paquete inválido.');
+  if (modo === 'reemplazar') {
+    CAT = Array.isArray(pkg.catalogo) ? pkg.catalogo : [];
+    LOT = Array.isArray(pkg.lotes) ? pkg.lotes : [];
+    MOV = Array.isArray(pkg.movimientos) ? pkg.movimientos : [];
+    if (pkg.config) CFG = Object.assign({}, CFG_DEFAULT, pkg.config);
+  } else {
+    if (Array.isArray(pkg.catalogo)) mezclarCatalogo(pkg.catalogo);
+    if (Array.isArray(pkg.lotes)) pkg.lotes.forEach(l => {
+      const i = LOT.findIndex(x => x.id === l.id);
+      if (i >= 0) LOT[i] = l; else LOT.push(l);
+    });
+    if (Array.isArray(pkg.movimientos)) pkg.movimientos.forEach(m => {
+      if (!MOV.some(x => x.id === m.id)) MOV.push(m);
+    });
+    if (pkg.config) CFG = Object.assign({}, CFG, pkg.config);
+  }
+  persistAll();
+}
+
+// ---------- Escáner cámara ----------
+let _qrInstance = null;
+let _scanTarget = null;
+function abrirCamara(target) {
+  _scanTarget = target;
+  document.getElementById('overlay-camera').classList.add('show');
+  setTimeout(async () => {
+    try {
+      _qrInstance = new Html5Qrcode('qr-reader');
+      await _qrInstance.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 260, height: 140 } },
+        onScanDetected,
+        () => {}
+      );
+    } catch (e) { toast('No se pudo iniciar la cámara: ' + e, 'error'); cerrarCamara(); }
+  }, 50);
+}
+function onScanDetected(decoded) {
+  const cat = findCatByScan(decoded);
+  if (_scanTarget === 'entrada') {
+    document.getElementById('ent-clave').value = cat ? cat.clave : decoded;
+    actualizarDescEntrada();
+  } else if (_scanTarget === 'salida') {
+    document.getElementById('sal-clave').value = cat ? cat.clave : decoded;
+    refrescarLotesSalida();
+  }
+  toast(cat ? ('Lectura: ' + cat.clave) : ('Código: ' + decoded + ' (sin match)'));
+  cerrarCamara();
+}
+function cerrarCamara() {
+  document.getElementById('overlay-camera').classList.remove('show');
+  if (_qrInstance) {
+    _qrInstance.stop().then(() => _qrInstance.clear()).catch(() => {});
+    _qrInstance = null;
+  }
+}
+// ---------- Bootstrap ----------
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.pill').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+  document.getElementById('btn-camera-close').addEventListener('click', cerrarCamara);
+  document.getElementById('overlay-generic').addEventListener('click', (e) => {
+    if (e.target.id === 'overlay-generic') cerrarModal();
+  });
+  // Cerrar modal cámara si clic fuera
+  document.getElementById('overlay-camera').addEventListener('click', (e) => {
+    if (e.target.id === 'overlay-camera') cerrarCamara();
+  });
+  datalistCatalogo();
+  switchTab('entrada');
+});
+</script>
+
+</body>
+</html>
