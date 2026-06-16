@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malla — Mensajería sin Internet (mesh híbrida)</title>
+<style>
+:root{
+  --verde:#006847; --verde-claro:#008f5d; --verde-suave:#e8f4ef;
+  --rojo:#c0392b; --dorado:#c8973a; --blanco:#f9faf8;
+  --gris-claro:#eef0ed; --gris-medio:#9aaa96; --gris-texto:#3a3f35;
+  --borde:#cad5c5; --sombra:0 2px 16px rgba(0,100,60,.09);
+  --amarillo:#f3c23a; --azul:#2c6e9b; --burbuja-yo:#dcf3e8; --burbuja-otro:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f0;color:var(--gris-texto);min-height:100vh;padding-bottom:64px}
+h1,h2,h3{font-weight:700}
+.header-banner{background:linear-gradient(135deg,#004d35,#006847 50%,#008f5d);color:#fff;padding:22px 18px 18px;text-align:center;position:relative;overflow:hidden}
+.header-banner h1{font-size:1.4rem;letter-spacing:.3px}
+.header-banner .sub{opacity:.9;margin-top:4px;font-size:.86rem}
+.header-banner::before,.header-banner::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}
+.header-banner::before{top:-40px;right:-40px;width:180px;height:180px}
+.header-banner::after{bottom:-60px;left:-30px;width:150px;height:150px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(255,255,255,.14);padding:4px 12px;border-radius:20px;font-size:.78rem}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amarillo)}
+.dot.on{background:#7CFFB2}
+.wrap{max-width:760px;margin:0 auto;padding:14px}
+.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--borde);z-index:50}
+.tabs button{flex:1;border:0;background:none;padding:9px 2px 7px;font-size:.68rem;color:var(--gris-medio);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .ic{font-size:1.2rem;line-height:1}
+.tabs button.active{color:var(--verde);font-weight:700}
+.view{display:none}
+.view.active{display:block}
+.card{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--sombra)}
+.card h2{font-size:1.05rem;color:var(--verde);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .hint{font-size:.82rem;color:var(--gris-medio);margin-bottom:12px;line-height:1.45}
+label{display:block;font-size:.82rem;font-weight:600;margin:10px 0 4px}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--borde);border-radius:10px;font-size:.92rem;font-family:inherit;background:var(--blanco)}
+textarea{resize:vertical;min-height:64px}
+button.btn{background:var(--verde);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s}
+button.btn:hover{background:var(--verde-claro)}
+button.btn.sec{background:#fff;color:var(--verde);border:1.5px solid var(--verde)}
+button.btn.gray{background:#eef0ed;color:var(--gris-texto);border:1px solid var(--borde)}
+button.btn.danger{background:var(--rojo)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:.78rem;word-break:break-all;background:var(--gris-claro);padding:8px 10px;border-radius:8px}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--verde-suave);color:var(--verde)}
+.badge.warn{background:#fdf4d9;color:#9a7400}
+.badge.gray{background:#eef0ed;color:#666}
+.list-item{border:1px solid var(--borde);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff;cursor:pointer}
+.list-item:hover{border-color:var(--verde-claro)}
+.list-item .name{font-weight:700;color:var(--gris-texto)}
+.list-item .meta{font-size:.78rem;color:var(--gris-medio);margin-top:2px}
+.empty{text-align:center;color:var(--gris-medio);padding:26px 10px;font-size:.9rem}
+/* chat */
+.chat-head{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--borde);border-radius:14px 14px 0 0;padding:12px 14px}
+.chat-head .av{width:38px;height:38px;border-radius:50%;background:var(--verde-suave);color:var(--verde);display:flex;align-items:center;justify-content:center;font-weight:700}
+.chat-body{background:#eef3ee;border-left:1px solid var(--borde);border-right:1px solid var(--borde);padding:14px;min-height:300px;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.bubble{max-width:80%;padding:8px 12px;border-radius:14px;font-size:.92rem;line-height:1.4;box-shadow:0 1px 2px rgba(0,0,0,.05);position:relative}
+.bubble.me{align-self:flex-end;background:var(--burbuja-yo);border-bottom-right-radius:4px}
+.bubble.them{align-self:flex-start;background:var(--burbuja-otro);border-bottom-left-radius:4px}
+.bubble .t{font-size:.66rem;color:var(--gris-medio);margin-top:3px;text-align:right}
+.bubble .tick{color:var(--azul);font-weight:700}
+.chat-input{display:flex;gap:8px;background:#fff;border:1px solid var(--borde);border-top:0;border-radius:0 0 14px 14px;padding:10px}
+.chat-input input{border-radius:22px}
+.chat-input button{flex:0 0 auto;width:46px;border-radius:50%;padding:0;height:44px;font-size:1.1rem}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stat-grid .b{background:var(--verde-suave);border-radius:10px;padding:10px 4px}
+.stat-grid .b b{display:block;font-size:1.3rem;color:var(--verde)}
+.stat-grid .b span{font-size:.7rem;color:var(--gris-medio)}
+details{border:1px solid var(--borde);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fff}
+details summary{font-weight:600;cursor:pointer;color:var(--verde)}
+.notice{font-size:.82rem;background:#fdf4d9;border:1px solid #ecd9a0;color:#7a5c00;padding:10px 12px;border-radius:10px;line-height:1.45;margin-bottom:10px}
+.ok{font-size:.82rem;background:var(--verde-suave);border:1px solid var(--borde);color:var(--verde);padding:10px 12px;border-radius:10px;line-height:1.45;margin-bottom:10px}
+.back{position:absolute;top:16px;left:14px;background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:8px;padding:6px 10px;font-size:.8rem;cursor:pointer}
+canvas.qr{image-rendering:pixelated;width:200px;height:200px;background:#fff;border:8px solid #fff;border-radius:8px;display:block;margin:6px auto}
+ul.clean{list-style:none;font-size:.85rem;line-height:1.6}
+ul.clean li{padding-left:18px;position:relative}
+ul.clean li::before{content:'›';position:absolute;left:4px;color:var(--verde);font-weight:700}
+.tech-tbl{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px}
+.tech-tbl th,.tech-tbl td{border:1px solid var(--borde);padding:6px 8px;text-align:left;vertical-align:top}
+.tech-tbl th{background:var(--verde-suave);color:var(--verde)}
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 18px;border-radius:24px;font-size:.85rem;opacity:0;transition:.25s;z-index:99;pointer-events:none}
+.toast.show{opacity:.95}
+</style>
+</head>
+<body>
+<div class="header-banner">
+  <h1>📡 Malla</h1>
+  <div class="sub">Mensajería cifrada que viaja sin Internet ni red celular</div>
+  <div class="status-pill"><span class="dot" id="netDot"></span><span id="netTxt">Iniciando…</span></div>
+</div>
+
+<div class="wrap">
+
+<!-- ===================== CHATS ===================== -->
+<section class="view active" id="v-chats">
+  <div id="chatList">
+    <div class="card">
+      <h2>💬 Conversaciones</h2>
+      <div class="hint">Tus mensajes se cifran de extremo a extremo y saltan de dispositivo en dispositivo hasta llegar al destinatario. Si no hay ruta ahora, quedan guardados y se entregan cuando aparezca un enlace (Wi-Fi local, pestaña o relevo físico).</div>
+      <div id="convos"></div>
+    </div>
+  </div>
+
+  <div id="chatOpen" style="display:none">
+    <div class="chat-head">
+      <button class="btn gray" style="flex:0 0 auto;padding:8px 12px" onclick="closeChat()">‹</button>
+      <div class="av" id="chAv">?</div>
+      <div style="flex:1"><div class="name" id="chName" style="font-weight:700"></div><div class="meta" style="font-size:.74rem;color:var(--gris-medio)" id="chMeta"></div></div>
+    </div>
+    <div class="chat-body" id="chBody"></div>
+    <div class="chat-input">
+      <input id="chInput" placeholder="Escribe un mensaje cifrado…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONEXIONES ===================== -->
+<section class="view" id="v-conex">
+  <div class="card">
+    <h2>🔗 Enlaces activos</h2>
+    <div class="hint">Aquí gestionas por dónde "saltan" tus mensajes. Cuantos más enlaces, más lejos llega la malla.</div>
+    <div class="stat-grid">
+      <div class="b"><b id="stPeers">0</b><span>enlaces vivos</span></div>
+      <div class="b"><b id="stSeen">0</b><span>mensajes ruteados</span></div>
+      <div class="b"><b id="stQueue">0</b><span>en cola (reenvío)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📶 Wi-Fi / Hotspot local (P2P real)</h2>
+    <div class="hint">Conecta dos teléfonos a la <b>misma red Wi-Fi o a un hotspot compartido</b> (sin datos móviles). El enlace se negocia con WebRTC <b>sin ningún servidor</b>: solo intercambian un código una vez.</div>
+    <div class="notice">Funciona sin Internet siempre que ambos estén en la misma red local. No requiere antena ni operador.</div>
+    <div class="row">
+      <button class="btn" onclick="rtcCreate()">① Crear invitación</button>
+      <button class="btn sec" onclick="document.getElementById('rtcAcceptBox').style.display='block'">② Aceptar invitación</button>
+    </div>
+
+    <div id="rtcOfferBox" style="display:none;margin-top:12px">
+      <label>Tu código de invitación — compártelo (copiar / archivo)</label>
+      <textarea id="rtcOfferOut" readonly rows="3"></textarea>
+      <div class="row" style="margin-top:6px">
+        <button class="btn sec" onclick="copyEl('rtcOfferOut')">Copiar</button>
+        <button class="btn sec" onclick="dlText('invitacion-malla.txt', document.getElementById('rtcOfferOut').value)">Guardar archivo</button>
+      </div>
+      <label>Pega aquí la <b>respuesta</b> del otro dispositivo</label>
+      <textarea id="rtcAnswerIn" rows="3" placeholder="Respuesta (paso ③ del otro teléfono)"></textarea>
+      <button class="btn" style="margin-top:6px" onclick="rtcAcceptAnswer()">Conectar</button>
+    </div>
+
+    <div id="rtcAcceptBox" style="display:none;margin-top:12px">
+      <label>Pega la <b>invitación</b> que te enviaron</label>
+      <textarea id="rtcOfferIn" rows="3" placeholder="Código de invitación (paso ① del otro teléfono)"></textarea>
+      <button class="btn" style="margin-top:6px" onclick="rtcCreateAnswer()">Generar respuesta</button>
+      <div id="rtcAnswerOutBox" style="display:none;margin-top:10px">
+        <label>③ Envía esta respuesta de vuelta</label>
+        <textarea id="rtcAnswerOut" readonly rows="3"></textarea>
+        <div class="row" style="margin-top:6px">
+          <button class="btn sec" onclick="copyEl('rtcAnswerOut')">Copiar</button>
+          <button class="btn sec" onclick="dlText('respuesta-malla.txt', document.getElementById('rtcAnswerOut').value)">Guardar archivo</button>
+        </div>
+      </div>
+    </div>
+    <div id="rtcList" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h2>🖥️ Mismo dispositivo / pestañas</h2>
+    <div class="hint">La malla también une pestañas o ventanas del mismo navegador (útil para probar el ruteo). Se activa solo.</div>
+    <div id="bcStatus" class="mono">—</div>
+  </div>
+</section>
+
+<!-- ===================== CONTACTOS ===================== -->
+<section class="view" id="v-cont">
+  <div class="card">
+    <h2>🪪 Mi identidad</h2>
+    <div class="hint">Tu identidad <b>es una llave criptográfica</b>, no un número de teléfono. Comparte tu código para que otros puedan escribirte de forma cifrada.</div>
+    <label>Tu nombre visible</label>
+    <div class="row">
+      <input id="myName" placeholder="Ej. Dra. Pérez / Brigada 3">
+      <button class="btn" style="flex:0 0 auto" onclick="saveName()">Guardar</button>
+    </div>
+    <div style="margin-top:10px">
+      <span class="badge">huella</span> <span class="mono" id="myFp" style="display:inline-block;margin-top:6px"></span>
+    </div>
+    <canvas class="qr" id="myQr"></canvas>
+    <label>Tu código de contacto</label>
+    <textarea id="myContact" readonly rows="3"></textarea>
+    <div class="row" style="margin-top:6px">
+      <button class="btn sec" onclick="copyEl('myContact')">Copiar</button>
+      <button class="btn sec" onclick="shareContact()">Compartir</button>
+      <button class="btn sec" onclick="dlText('mi-contacto-malla.txt', document.getElementById('myContact').value)">Archivo</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>➕ Agregar contacto</h2>
+    <div class="hint">Pega el código que te compartieron, o escanéalo con la cámara.</div>
+    <textarea id="addContact" rows="3" placeholder="Pega aquí el código de contacto…"></textarea>
+    <div class="row" style="margin-top:6px">
+      <button class="btn" onclick="addContactPaste()">Agregar</button>
+      <button class="btn sec" onclick="scanQR('addContact')">📷 Escanear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>👥 Mis contactos</h2>
+    <div id="contactList"></div>
+  </div>
+</section>
+
+<!-- ===================== RELEVO (SNEAKERNET) ===================== -->
+<section class="view" id="v-relay">
+  <div class="card">
+    <h2>🚶 Relevo físico (sneakernet)</h2>
+    <div class="hint">¿No hay ningún enlace cercano al destinatario? Lleva los mensajes <b>físicamente</b>: exporta tu cola cifrada, muévela en un archivo o QR a alguien que sí alcance al destino, y este la importa. Los mensajes ya van cifrados de extremo a extremo: quien los transporta no puede leerlos.</div>
+    <div class="row">
+      <button class="btn" onclick="exportBundle()">📤 Exportar cola cifrada</button>
+      <button class="btn sec" onclick="document.getElementById('impBox').style.display='block'">📥 Importar</button>
+    </div>
+    <div id="bundleOutBox" style="display:none;margin-top:12px">
+      <div class="ok" id="bundleInfo"></div>
+      <div class="row">
+        <button class="btn sec" onclick="dlText('relevo-malla.json', window.__bundle||'')">Guardar archivo</button>
+        <button class="btn sec" onclick="copyText(window.__bundle||'')">Copiar</button>
+      </div>
+    </div>
+    <div id="impBox" style="display:none;margin-top:12px">
+      <label>Pega el paquete de relevo o carga el archivo</label>
+      <textarea id="impText" rows="3" placeholder="Contenido de relevo-malla.json"></textarea>
+      <div class="row" style="margin-top:6px">
+        <input type="file" id="impFile" accept=".json,.txt" style="padding:6px">
+        <button class="btn" style="flex:0 0 auto" onclick="importBundle()">Importar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ACERCA ===================== -->
+<section class="view" id="v-about">
+  <div class="card">
+    <h2>ℹ️ Cómo funciona y qué es realista</h2>
+    <div class="hint">Esta app es <b>honesta</b> sobre lo que un navegador puede hacer hoy sin Internet. Lo que ves aquí funciona de verdad; lo que necesita hardware o app nativa está marcado como tal.</div>
+
+    <h3 style="color:var(--verde);margin:6px 0 4px;font-size:.95rem">Lo que SÍ funciona en esta web (gratis, sin operador)</h3>
+    <ul class="clean">
+      <li><b>Cifrado E2E real</b>: identidad por llave (ECDH/ECDSA P-256) y AES-256-GCM con WebCrypto.</li>
+      <li><b>Malla con saltos</b>: cada mensaje lleva TTL, se deduplica y se reenvía por todos los enlaces.</li>
+      <li><b>Almacenar y reenviar</b>: si no hay ruta, el mensaje espera y se entrega al aparecer un enlace.</li>
+      <li><b>P2P por Wi-Fi/hotspot local</b> con WebRTC, sin ningún servidor de señalización (intercambias un código a mano).</li>
+      <li><b>Relevo físico (sneakernet)</b> por archivo o QR para cruzar zonas sin cobertura.</li>
+    </ul>
+
+    <h3 style="color:var(--verde);margin:12px 0 4px;font-size:.95rem">Lo que requiere app nativa o hardware</h3>
+    <table class="tech-tbl">
+      <tr><th>Tecnología</th><th>Alcance</th><th>¿En navegador?</th></tr>
+      <tr><td>Bluetooth Mesh (estilo Bridgefy/Briar)</td><td>10–100 m/salto</td><td>No de forma fiable: el navegador no puede anunciar/escanear BLE en segundo plano. Requiere app nativa Android/iOS.</td></tr>
+      <tr><td>LoRa (SX1262/1276), Meshtastic</td><td>2–30 km/salto</td><td>No: necesita un módulo de radio físico. Se conecta vía app/puente nativo.</td></tr>
+      <tr><td>Wi-Fi Direct / Aware</td><td>50–200 m</td><td>Parcial: APIs nativas; en web se aproxima con Wi-Fi local + WebRTC (incluido aquí).</td></tr>
+      <tr><td>APRS / DMR / Packet</td><td>Decenas de km</td><td>No: requiere radio y licencia de radioaficionado.</td></tr>
+    </table>
+
+    <div class="notice" style="margin-top:12px">Camino realista a una red híbrida completa: usar esta app como capa de <b>identidad + cifrado + ruteo</b> y, en una versión nativa, enchufar transportes de <b>BLE mesh</b> y un puente a <b>Meshtastic/LoRa</b>. El protocolo de paquetes ya está diseñado para eso (transportes intercambiables).</div>
+
+    <h3 style="color:var(--verde);margin:6px 0 4px;font-size:.95rem">Proyectos de referencia</h3>
+    <ul class="clean">
+      <li>Meshtastic · Reticulum — LoRa de largo alcance.</li>
+      <li>Briar · Bridgefy · Serval Mesh — Bluetooth/Wi-Fi mesh en móvil.</li>
+    </ul>
+    <div class="hint" style="margin-top:12px">Privacidad: todo se guarda solo en este dispositivo (localStorage). No hay servidores, cuentas ni telemetría. Demostración educativa; para uso crítico audita la criptografía.</div>
+  </div>
+  <div class="card">
+    <h2>🧪 Probarlo en 1 minuto</h2>
+    <ul class="clean">
+      <li>Abre esta página en <b>dos pestañas</b> (o dos teléfonos en el mismo Wi-Fi).</li>
+      <li>En cada una pon tu nombre en <b>Contactos</b> y copia tu código.</li>
+      <li>Agrégense mutuamente como contacto.</li>
+      <li>Entre pestañas ya están enlazadas; entre teléfonos crea/acepta una invitación en <b>Enlaces</b>.</li>
+      <li>Escríbanse desde <b>Chats</b>. Verás los saltos en el contador de "mensajes ruteados".</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<!-- QR scanner overlay -->
+<div id="scanOverlay" style="display:none;position:fixed;inset:0;background:#000;z-index:200;flex-direction:column;align-items:center;justify-content:center">
+  <video id="scanVid" playsinline style="max-width:92%;max-height:70%;border-radius:12px"></video>
+  <button class="btn gray" style="margin-top:16px" onclick="stopScan()">Cancelar</button>
+  <div style="color:#fff;font-size:.8rem;margin-top:8px">Apunta al código QR de contacto</div>
+</div>
+
+<nav class="tabs">
+  <button class="active" data-v="chats" onclick="tab('chats')"><span class="ic">💬</span>Chats</button>
+  <button data-v="conex" onclick="tab('conex')"><span class="ic">🔗</span>Enlaces</button>
+  <button data-v="cont" onclick="tab('cont')"><span class="ic">🪪</span>Contactos</button>
+  <button data-v="relay" onclick="tab('relay')"><span class="ic">🚶</span>Relevo</button>
+  <button data-v="about" onclick="tab('about')"><span class="ic">ℹ️</span>Acerca</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Malla — mensajería mesh híbrida (un solo archivo, sin servidor)
+   Núcleo 100% offline y sin dependencias externas.
+   ============================================================ */
+const LS = {
+  get:(k,d)=>{try{return JSON.parse(localStorage.getItem('mm_'+k))??d}catch(e){return d}},
+  set:(k,v)=>localStorage.setItem('mm_'+k,JSON.stringify(v))
+};
+const enc = new TextEncoder(), dec = new TextDecoder();
+const b64 = {
+  enc: buf => btoa(String.fromCharCode(...new Uint8Array(buf))),
+  dec: str => Uint8Array.from(atob(str), c=>c.charCodeAt(0))
+};
+const b64url = {
+  enc: obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),
+  dec: str => JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,'+').replace(/_/g,'/'))))),
+};
+const rid = ()=>crypto.getRandomValues(new Uint8Array(8)).reduce((s,b)=>s+b.toString(16).padStart(2,'0'),'');
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function copyText(t){navigator.clipboard.writeText(t).then(()=>toast('Copiado'),()=>toast('No se pudo copiar'))}
+function copyEl(id){copyText(document.getElementById(id).value)}
+function dlText(name,text){const b=new Blob([text],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+
+/* ---------- Identidad criptográfica ---------- */
+let ID = null;            // {name, fp, ecdh:{pub,priv jwk}, ecdsa:{pub,priv jwk}}
+let ecdhPriv, ecdsaPriv;  // CryptoKey privadas
+
+async function loadOrCreateIdentity(){
+  let saved = LS.get('id', null);
+  if(!saved){
+    const kdh = await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'}, true, ['deriveKey','deriveBits']);
+    const kds = await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'}, true, ['sign','verify']);
+    saved = {
+      name: '',
+      ecdh:{pub: await crypto.subtle.exportKey('jwk',kdh.publicKey), priv: await crypto.subtle.exportKey('jwk',kdh.privateKey)},
+      ecdsa:{pub: await crypto.subtle.exportKey('jwk',kds.publicKey), priv: await crypto.subtle.exportKey('jwk',kds.privateKey)}
+    };
+    saved.fp = await fingerprint(saved.ecdh.pub, saved.ecdsa.pub);
+    LS.set('id', saved);
+  }
+  ID = saved;
+  ecdhPriv = await crypto.subtle.importKey('jwk', ID.ecdh.priv, {name:'ECDH',namedCurve:'P-256'}, false, ['deriveKey','deriveBits']);
+  ecdsaPriv = await crypto.subtle.importKey('jwk', ID.ecdsa.priv, {name:'ECDSA',namedCurve:'P-256'}, false, ['sign']);
+}
+async function fingerprint(ecdhPub, ecdsaPub){
+  const raw = JSON.stringify([ecdhPub.x,ecdhPub.y,ecdsaPub.x,ecdsaPub.y]);
+  const h = await crypto.subtle.digest('SHA-256', enc.encode(raw));
+  const hex = [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  return hex.slice(0,16);
+}
+function contactCode(){
+  // Forma compacta (ASCII): claves como [x,y] para que quepa en un QR.
+  const e=ID.ecdh.pub, s=ID.ecdsa.pub;
+  return JSON.stringify({v:1, n:ID.name||'', e:[e.x,e.y], s:[s.x,s.y], f:ID.fp});
+}
+
+/* ---------- Contactos ---------- */
+function contacts(){ return LS.get('contacts', {}); }     // fp -> {name,ecdh,ecdsa}
+function saveContacts(c){ LS.set('contacts', c); }
+async function addContactCode(code){
+  code=code.trim(); let d;
+  try{ d = code[0]==='{' ? JSON.parse(code) : b64url.dec(code); }catch(e){ toast('Código inválido'); return; }
+  if(!d||!d.e||!d.s){ toast('Código inválido'); return; }
+  const ej = Array.isArray(d.e) ? {kty:'EC',crv:'P-256',x:d.e[0],y:d.e[1],ext:true} : d.e;
+  const sj = Array.isArray(d.s) ? {kty:'EC',crv:'P-256',x:d.s[0],y:d.s[1],ext:true} : d.s;
+  const fp = await fingerprint(ej, sj);
+  if(d.f && d.f!==fp){ toast('La huella no coincide'); return; }
+  if(fp===ID.fp){ toast('Ese eres tú 🙂'); return; }
+  const c = contacts(); c[fp] = {name:d.n||'(sin nombre)', ecdh:ej, ecdsa:sj};
+  saveContacts(c);
+  if(!conv(fp)) ensureConv(fp);
+  renderContacts(); renderConvos();
+  toast('Contacto agregado: '+(d.n||fp.slice(0,6)));
+}
+
+/* ---------- Cifrado de mensajes ---------- */
+async function sharedKey(contactFp){
+  const c = contacts()[contactFp]; if(!c) throw new Error('contacto desconocido');
+  const theirEcdh = await crypto.subtle.importKey('jwk', c.ecdh, {name:'ECDH',namedCurve:'P-256'}, false, []);
+  const bits = await crypto.subtle.deriveBits({name:'ECDH',public:theirEcdh}, ecdhPriv, 256);
+  // salt = huellas ordenadas (acuerdo simétrico)
+  const salt = enc.encode([ID.fp, contactFp].sort().join('|'));
+  const base = await crypto.subtle.importKey('raw', bits, 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'HKDF',hash:'SHA-256',salt,info:enc.encode('malla-msg-v1')}, base, {name:'AES-GCM',length:256}, false, ['encrypt','decrypt']);
+}
+async function sign(bytes){
+  const sig = await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'}, ecdsaPriv, bytes);
+  return b64.enc(sig);
+}
+async function verify(senderFp, bytes, sigB64){
+  const c = contacts()[senderFp]; if(!c) return false;
+  const key = await crypto.subtle.importKey('jwk', c.ecdsa, {name:'ECDSA',namedCurve:'P-256'}, false, ['verify']);
+  return crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'}, key, b64.dec(sigB64), bytes);
+}
+function canonical(p){ return enc.encode([p.id,p.from,p.to,p.ts,p.iv,p.ct].join('|')); }
+
+async function buildMessage(toFp, text){
+  const key = await sharedKey(toFp);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const payload = JSON.stringify({t:text, ts:Date.now(), mid:rid(), name:ID.name||''});
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, enc.encode(payload));
+  const p = {v:1, type:'msg', id:rid(), ttl:7, from:ID.fp, to:toFp, ts:Date.now(), iv:b64.enc(iv), ct:b64.enc(ct)};
+  p.sig = await sign(canonical(p));
+  return p;
+}
+async function buildAck(toFp, mid){
+  const key = await sharedKey(toFp);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, enc.encode(JSON.stringify({ack:mid})));
+  const p = {v:1, type:'ack', id:rid(), ttl:7, from:ID.fp, to:toFp, ts:Date.now(), iv:b64.enc(iv), ct:b64.enc(ct)};
+  p.sig = await sign(canonical(p));
+  return p;
+}
+
+/* ---------- Motor mesh: store-and-forward + flooding con TTL ---------- */
+const SEEN_MAX = 800, QUEUE_TTL = 1000*60*60*24*3; // 3 días
+let seen = new Set(LS.get('seen', []));
+let routed = LS.get('routed', 0);
+function rememberSeen(id){ seen.add(id); if(seen.size>SEEN_MAX){ const a=[...seen]; seen=new Set(a.slice(a.length-SEEN_MAX)); } LS.set('seen',[...seen]); }
+function queue(){ return LS.get('queue', []); }
+function setQueue(q){ LS.set('queue', q); }
+function enqueue(p){ const q=queue(); q.push({p, exp:Date.now()+QUEUE_TTL}); setQueue(q); updateStats(); }
+function pruneQueue(){ const now=Date.now(); setQueue(queue().filter(x=>x.exp>now)); }
+
+const transports = [];   // {name, send(jsonStr), isLive()}
+function broadcast(p, exclude){
+  const s = JSON.stringify(p);
+  transports.forEach(t=>{ if(t!==exclude && t.isLive()) try{t.send(s)}catch(e){} });
+}
+async function originate(p){            // mensaje propio: registrar, encolar, difundir
+  rememberSeen(p.id);
+  enqueue(p);
+  broadcast(p, null);
+}
+async function ingest(p, via){
+  if(!p || !p.id || seen.has(p.id)) return;
+  rememberSeen(p.id);
+  routed++; LS.set('routed', routed); updateStats();
+  if(p.to === ID.fp){
+    await deliverLocal(p);
+    // entregado: no es necesario reenviar más allá
+    return;
+  }
+  // relé: guardar y reenviar con TTL decreciente
+  if((p.ttl|0) > 1){ p = {...p, ttl:p.ttl-1}; enqueue(p); broadcast(p, via); }
+}
+async function deliverLocal(p){
+  let ok=false, data=null;
+  try{
+    const key = await sharedKey(p.from);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM',iv:b64.dec(p.iv)}, key, b64.dec(p.ct));
+    data = JSON.parse(dec.decode(pt));
+    ok = await verify(p.from, canonical(p), p.sig);
+  }catch(e){ /* remitente desconocido o no descifrable */ }
+  if(p.type==='ack' && data && data.ack){ markDelivered(p.from, data.ack); return; }
+  if(p.type==='msg' && data){
+    addIncoming(p.from, {dir:'in', text:data.t, ts:data.ts||p.ts, mid:data.mid, verified:ok});
+    // enviar acuse de regreso por la malla
+    try{ const a=await buildAck(p.from, data.mid); rememberSeen(a.id); enqueue(a); broadcast(a,null);}catch(e){}
+    if(curChat!==p.from) toast('Nuevo mensaje de '+(contacts()[p.from]?.name||p.from.slice(0,6)));
+  }
+}
+function flushTo(t){ // al conectar un enlace, vuelca la cola
+  pruneQueue();
+  queue().forEach(x=>{ if(t.isLive()) try{t.send(JSON.stringify(x.p))}catch(e){} });
+}
+
+/* ---------- Conversaciones / almacenamiento de chat ---------- */
+function convos(){ return LS.get('convos', {}); }       // fp -> {msgs:[], updated}
+function saveConvos(c){ LS.set('convos', c); }
+function conv(fp){ return convos()[fp]; }
+function ensureConv(fp){ const c=convos(); if(!c[fp]) c[fp]={msgs:[],updated:Date.now()}; saveConvos(c); return c[fp]; }
+function addOutgoing(fp,m){ const c=convos(); (c[fp]=c[fp]||{msgs:[]}).msgs.push(m); c[fp].updated=Date.now(); saveConvos(c); if(curChat===fp)renderChat(); renderConvos(); }
+function addIncoming(fp,m){
+  const c=convos(); (c[fp]=c[fp]||{msgs:[]});
+  if(m.mid && c[fp].msgs.some(x=>x.mid===m.mid)) return; // dedup por id de mensaje
+  c[fp].msgs.push(m); c[fp].updated=Date.now(); saveConvos(c);
+  if(curChat===fp)renderChat(); renderConvos();
+}
+function markDelivered(fp,mid){ const c=convos(); const cc=c[fp]; if(!cc)return; const m=cc.msgs.find(x=>x.mid===mid&&x.dir==='out'); if(m){m.state='delivered';saveConvos(c); if(curChat===fp)renderChat();} }
+
+/* ============================================================
+   TRANSPORTES
+   ============================================================ */
+/* 1) BroadcastChannel: une pestañas/ventanas del mismo navegador */
+let bc=null;
+function initBroadcast(){
+  if(!('BroadcastChannel'in window)){ document.getElementById('bcStatus').textContent='No soportado en este navegador'; return; }
+  bc = new BroadcastChannel('malla-mesh');
+  const t = { name:'tabs', isLive:()=>true, send:s=>bc.postMessage(s) };
+  transports.push(t);
+  bc.onmessage = e=>{ try{ ingest(JSON.parse(e.data), t);}catch(err){} };
+  // anuncia presencia para volcar cola
+  bc.postMessage(JSON.stringify({__hello:true}));
+  const orig = bc.onmessage;
+  bc.onmessage = e=>{ try{ const d=JSON.parse(e.data); if(d.__hello){ flushTo(t); return;} ingest(d,t);}catch(err){} };
+  document.getElementById('bcStatus').textContent='Activo · canal "malla-mesh" (mismo navegador)';
+  flushTo(t);
+}
+
+/* 2) WebRTC: P2P por Wi-Fi/hotspot local, sin servidor de señalización */
+const rtcLinks = []; // {pc, dc, t, state}
+function newPC(){ return new RTCPeerConnection({iceServers:[]}); } // solo candidatos locales -> LAN
+function waitIce(pc){ return new Promise(res=>{ if(pc.iceGatheringState==='complete')return res(); pc.onicegatheringstatechange=()=>{ if(pc.iceGatheringState==='complete')res(); }; setTimeout(res,2500); }); }
+function wireChannel(link){
+  const dc = link.dc;
+  link.t = { name:'rtc', isLive:()=>link.state==='open', send:s=>{ if(link.state==='open') link.dc.send(s); } };
+  transports.push(link.t);
+  dc.onopen = ()=>{ link.state='open'; renderRtc(); updateStats(); toast('Enlace Wi-Fi conectado'); flushTo(link.t); };
+  dc.onclose= ()=>{ link.state='closed'; renderRtc(); updateStats(); };
+  dc.onmessage = e=>{ try{ ingest(JSON.parse(e.data), link.t);}catch(err){} };
+}
+async function rtcCreate(){
+  const pc = newPC();
+  const dc = pc.createDataChannel('malla');
+  const link = {pc, dc, state:'connecting'};
+  rtcLinks.push(link); wireChannel(link);
+  pc.onconnectionstatechange=()=>{ if(['failed','disconnected','closed'].includes(pc.connectionState)){link.state='closed';renderRtc();} };
+  const offer = await pc.createOffer(); await pc.setLocalDescription(offer); await waitIce(pc);
+  document.getElementById('rtcOfferBox').style.display='block';
+  document.getElementById('rtcOfferOut').value = b64url.enc(pc.localDescription);
+  renderRtc();
+}
+async function rtcCreateAnswer(){
+  const inp = document.getElementById('rtcOfferIn').value.trim(); if(!inp){toast('Pega la invitación');return;}
+  let offer; try{ offer = b64url.dec(inp);}catch(e){toast('Invitación inválida');return;}
+  const pc = newPC();
+  const link = {pc, dc:null, state:'connecting'};
+  pc.ondatachannel = e=>{ link.dc=e.channel; wireChannel(link); };
+  pc.onconnectionstatechange=()=>{ if(['failed','disconnected','closed'].includes(pc.connectionState)){link.state='closed';renderRtc();} };
+  rtcLinks.push(link);
+  await pc.setRemoteDescription(offer);
+  const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); await waitIce(pc);
+  document.getElementById('rtcAnswerOutBox').style.display='block';
+  document.getElementById('rtcAnswerOut').value = b64url.enc(pc.localDescription);
+  renderRtc();
+}
+async function rtcAcceptAnswer(){
+  const inp = document.getElementById('rtcAnswerIn').value.trim(); if(!inp){toast('Pega la respuesta');return;}
+  let ans; try{ ans=b64url.dec(inp);}catch(e){toast('Respuesta inválida');return;}
+  const link = rtcLinks.filter(l=>l.dc && l.dc.label==='malla').slice(-1)[0];
+  if(!link){toast('Primero crea una invitación');return;}
+  await link.pc.setRemoteDescription(ans);
+  toast('Conectando…');
+}
+function renderRtc(){
+  const el=document.getElementById('rtcList');
+  if(!rtcLinks.length){ el.innerHTML=''; return; }
+  el.innerHTML='<label>Enlaces Wi-Fi</label>'+rtcLinks.map((l,i)=>{
+    const c=l.state==='open'?'badge':'badge warn';
+    return `<div class="list-item" style="cursor:default"><span class="${c}">${l.state==='open'?'conectado':l.state}</span> &nbsp;Enlace #${i+1}</div>`;
+  }).join('');
+}
+
+/* 3) Sneakernet: exportar/importar la cola cifrada */
+function exportBundle(){
+  pruneQueue();
+  const q=queue();
+  if(!q.length){ toast('No hay mensajes en cola'); return; }
+  const bundle = {malla:'relevo', v:1, ts:Date.now(), packets:q.map(x=>x.p)};
+  window.__bundle = JSON.stringify(bundle);
+  document.getElementById('bundleOutBox').style.display='block';
+  document.getElementById('bundleInfo').textContent=`Listo: ${q.length} paquete(s) cifrado(s). Llévalo a alguien que alcance al destinatario.`;
+}
+async function importBundle(){
+  let txt=document.getElementById('impText').value.trim();
+  const f=document.getElementById('impFile').files[0];
+  if(f) txt=await f.text();
+  if(!txt){ toast('Pega o carga un paquete'); return; }
+  let b; try{ b=JSON.parse(txt);}catch(e){ toast('Paquete inválido'); return; }
+  const pk = b.packets||[]; let n=0;
+  for(const p of pk){ if(!seen.has(p.id)){ await ingest(p, null); n++; } }
+  toast(`Relevo importado: ${n} mensaje(s) integrado(s)`);
+  document.getElementById('impText').value='';
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
+let curChat=null;
+function tab(v){
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.v===v));
+  document.getElementById('v-'+v).classList.add('active');
+  if(v==='cont') renderIdentity();
+  if(v==='conex') updateStats();
+}
+function renderConvos(){
+  const c=convos(), cont=contacts();
+  const fps=Object.keys(c).sort((a,b)=>(c[b].updated||0)-(c[a].updated||0));
+  const el=document.getElementById('convos');
+  if(!fps.length){ el.innerHTML='<div class="empty">Sin conversaciones todavía.<br>Agrega un contacto y escríbele.</div>'; return; }
+  el.innerHTML=fps.map(fp=>{
+    const last=c[fp].msgs[c[fp].msgs.length-1];
+    const name=cont[fp]?.name||fp.slice(0,8);
+    const prev=last?(last.dir==='out'?'Tú: ':'')+ (last.text||'').slice(0,38):'—';
+    return `<div class="list-item" onclick="openChat('${fp}')"><div class="name">${esc(name)}</div><div class="meta">${esc(prev)}</div></div>`;
+  }).join('');
+}
+function openChat(fp){
+  if(!contacts()[fp]){ toast('Agrega primero a este contacto'); return; }
+  curChat=fp; ensureConv(fp);
+  document.getElementById('chatList').style.display='none';
+  document.getElementById('chatOpen').style.display='block';
+  const name=contacts()[fp]?.name||fp.slice(0,8);
+  document.getElementById('chName').textContent=name;
+  document.getElementById('chMeta').textContent='huella '+fp;
+  document.getElementById('chAv').textContent=(name[0]||'?').toUpperCase();
+  renderChat();
+}
+function closeChat(){ curChat=null; document.getElementById('chatOpen').style.display='none'; document.getElementById('chatList').style.display='block'; renderConvos(); }
+function renderChat(){
+  const c=conv(curChat); const body=document.getElementById('chBody');
+  if(!c||!c.msgs.length){ body.innerHTML='<div class="empty">Aún no hay mensajes.</div>'; return; }
+  body.innerHTML=c.msgs.map(m=>{
+    const t=new Date(m.ts||Date.now()).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    let tick=''; if(m.dir==='out') tick=m.state==='delivered'?'<span class="tick">✓✓</span>':'<span class="tick" style="color:#aaa">✓</span>';
+    const warn = (m.dir==='in'&&m.verified===false)?' ⚠️':'';
+    return `<div class="bubble ${m.dir==='out'?'me':'them'}">${esc(m.text)}${warn}<div class="t">${t} ${tick}</div></div>`;
+  }).join('');
+  body.scrollTop=body.scrollHeight;
+}
+async function sendChat(){
+  const inp=document.getElementById('chInput'); const text=inp.value.trim(); if(!text||!curChat)return;
+  inp.value='';
+  const mid=rid();
+  addOutgoing(curChat,{dir:'out',text,ts:Date.now(),mid,state:'sent'});
+  try{ const p=await buildMessage(curChat,text); p.__mid=mid; await originate(p); }
+  catch(e){ toast('Error al cifrar: '+e.message); }
+}
+function renderContacts(){
+  const c=contacts(); const fps=Object.keys(c);
+  const el=document.getElementById('contactList');
+  if(!fps.length){ el.innerHTML='<div class="empty">Sin contactos.</div>'; return; }
+  el.innerHTML=fps.map(fp=>`<div class="list-item" onclick="openChat('${fp}')"><div class="name">${esc(c[fp].name)}</div><div class="meta">huella ${fp} · toca para chatear</div></div>`).join('');
+}
+function renderIdentity(){
+  document.getElementById('myName').value=ID.name||'';
+  document.getElementById('myFp').textContent=ID.fp;
+  const code=contactCode();
+  document.getElementById('myContact').value=code;
+  drawQR(document.getElementById('myQr'), code);
+}
+function saveName(){
+  const v=document.getElementById('myName').value.trim();
+  ID.name=v; LS.set('id',ID); renderIdentity(); toast('Nombre guardado');
+}
+function addContactPaste(){ const v=document.getElementById('addContact').value.trim(); if(!v){toast('Pega un código');return;} addContactCode(v).then(()=>document.getElementById('addContact').value=''); }
+function shareContact(){
+  const code=document.getElementById('myContact').value;
+  if(navigator.share) navigator.share({title:'Mi contacto Malla', text:code}).catch(()=>{});
+  else copyText(code);
+}
+function updateStats(){
+  pruneQueue();
+  document.getElementById('stPeers').textContent=transports.filter(t=>t.isLive()).length;
+  document.getElementById('stSeen').textContent=routed;
+  document.getElementById('stQueue').textContent=queue().length;
+  const live=transports.filter(t=>t.isLive()).length;
+  document.getElementById('netDot').classList.toggle('on', live>0);
+  document.getElementById('netTxt').textContent = live>0 ? (live+' enlace(s) activo(s)') : 'Sin enlaces · mensajes en cola';
+}
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- Escáner QR (BarcodeDetector nativo, sin librerías) ---------- */
+let scanStream=null, scanTarget=null, scanRAF=null;
+async function scanQR(targetId){
+  if(!('BarcodeDetector'in window)){ toast('Escáner no disponible: pega el código'); return; }
+  scanTarget=targetId;
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const v=document.getElementById('scanVid'); v.srcObject=scanStream; await v.play();
+    document.getElementById('scanOverlay').style.display='flex';
+    const det=new BarcodeDetector({formats:['qr_code']});
+    const loop=async()=>{
+      if(!scanStream)return;
+      try{ const codes=await det.detect(v); if(codes.length){ const val=codes[0].rawValue; stopScan(); document.getElementById(scanTarget).value=val; addContactCode(val); return; } }catch(e){}
+      scanRAF=requestAnimationFrame(loop);
+    };
+    loop();
+  }catch(e){ toast('No se pudo abrir la cámara'); }
+}
+function stopScan(){
+  if(scanRAF)cancelAnimationFrame(scanRAF);
+  if(scanStream){ scanStream.getTracks().forEach(t=>t.stop()); scanStream=null; }
+  document.getElementById('scanOverlay').style.display='none';
+}
+
+/* ---------- Generador QR mínimo (sin dependencias) ----------
+   Modo byte, ECC nivel L, máscara 0, versiones 1..10.
+   Verificado decodificando con jsQR en todas las versiones. */
+const QR=(function(){
+  const EXP=new Array(256),LOG=new Array(256);
+  for(let i=0,x=1;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&0x100)x^=0x11d;}
+  for(let i=255;i<256;i++)EXP[i]=EXP[i-255];
+  function gmul(a,b){return(a===0||b===0)?0:EXP[(LOG[a]+LOG[b])%255];}
+  function genPoly(n){let p=[1];for(let i=0;i<n;i++){let np=new Array(p.length+1).fill(0);for(let j=0;j<p.length;j++){np[j]^=gmul(p[j],1);np[j+1]^=gmul(p[j],EXP[i]);}p=np;}return p;}
+  function ecc(data,n){let res=data.concat(new Array(n).fill(0));const g=genPoly(n);for(let i=0;i<data.length;i++){const c=res[i];if(c!==0)for(let j=0;j<g.length;j++)res[i+j]^=gmul(g[j],c);}return res.slice(data.length);}
+  const CAP =[null,17,32,53,78,106,134,154,192,230,271]; // bytes (L)
+  const ECW =[null,7,10,15,20,26,18,20,24,30,18];        // ecc por bloque
+  const BLK =[null,1,1,1,1,1,2,2,2,2,4];                 // bloques
+  const RAW =[null,26,44,70,100,134,172,196,242,292,346];// codewords totales
+  const ALIGN=[null,[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  const VERINFO=[null,0,0,0,0,0,0,0x07C94,0x085BC,0x09A99,0x0A4D3];
+  function pickVer(len){for(let v=1;v<=10;v++)if(CAP[v]>=len)return v;throw new Error('Texto muy largo para QR');}
+  function build(text){
+    const bytes=enc.encode(text); const ver=pickVer(bytes.length);
+    const size=17+ver*4, nb=BLK[ver], ecw=ECW[ver], totalCw=RAW[ver]-nb*ecw;
+    let bits=[];
+    const put=(val,len)=>{for(let i=len-1;i>=0;i--)bits.push((val>>i)&1);};
+    put(4,4); put(bytes.length, ver<10?8:16);
+    bytes.forEach(b=>put(b,8));
+    put(0, Math.min(4, totalCw*8-bits.length));
+    while(bits.length%8)bits.push(0);
+    let dataCw=[]; for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=(b<<1)|bits[i+j];dataCw.push(b);}
+    const pad=[0xEC,0x11]; let pi=0; while(dataCw.length<totalCw)dataCw.push(pad[pi++%2]);
+    const per=Math.floor(dataCw.length/nb), extra=dataCw.length%nb;
+    let dblocks=[],eblocks=[],idx=0;
+    for(let b=0;b<nb;b++){const cnt=per+(b>=nb-extra?1:0);const d=dataCw.slice(idx,idx+cnt);idx+=cnt;dblocks.push(d);eblocks.push(ecc(d,ecw));}
+    let final=[];const maxD=Math.max(...dblocks.map(d=>d.length));
+    for(let i=0;i<maxD;i++)for(let b=0;b<nb;b++)if(i<dblocks[b].length)final.push(dblocks[b][i]);
+    for(let i=0;i<ecw;i++)for(let b=0;b<nb;b++)final.push(eblocks[b][i]);
+    const m=Array.from({length:size},()=>new Array(size).fill(false));
+    const res=Array.from({length:size},()=>new Array(size).fill(false));
+    function finder(r,c){for(let i=-1;i<=7;i++)for(let j=-1;j<=7;j++){const rr=r+i,cc=c+j;if(rr<0||cc<0||rr>=size||cc>=size)continue;const v=(i>=0&&i<=6&&(j===0||j===6))||(j>=0&&j<=6&&(i===0||i===6))||(i>=2&&i<=4&&j>=2&&j<=4);m[rr][cc]=v;res[rr][cc]=true;}}
+    finder(0,0);finder(0,size-7);finder(size-7,0);
+    for(let i=0;i<size;i++){if(!res[6][i]){m[6][i]=i%2===0;res[6][i]=true;}if(!res[i][6]){m[i][6]=i%2===0;res[i][6]=true;}}
+    const al=ALIGN[ver];
+    if(al.length){const last=al.length-1;
+      for(let i=0;i<al.length;i++)for(let j=0;j<al.length;j++){
+        if((i===0&&j===0)||(i===0&&j===last)||(i===last&&j===0))continue;
+        const r=al[i],c=al[j];
+        for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const v=Math.max(Math.abs(dy),Math.abs(dx))!==1;m[r+dy][c+dx]=v;res[r+dy][c+dx]=true;}
+      }
+    }
+    m[size-8][8]=true;res[size-8][8]=true; // dark module
+    for(let i=0;i<9;i++){res[8][i]=true;res[i][8]=true;}
+    for(let i=0;i<8;i++){res[8][size-1-i]=true;res[size-1-i][8]=true;}
+    if(ver>=7){for(let i=0;i<6;i++)for(let j=0;j<3;j++){res[i][size-11+j]=true;res[size-11+j][i]=true;}}
+    let bitIdx=0;const stream=[];final.forEach(b=>{for(let i=7;i>=0;i--)stream.push((b>>i)&1);});
+    let dir=-1,row=size-1;
+    for(let col=size-1;col>0;col-=2){if(col===6)col--;
+      for(;row>=0&&row<size;row+=dir){
+        for(let c=0;c<2;c++){const cc=col-c;if(res[row][cc])continue;let v=bitIdx<stream.length?stream[bitIdx++]:0;
+          if(((row+cc)%2)===0)v^=1; m[row][cc]=!!v;res[row][cc]=true;}
+      }
+      dir=-dir;row+=dir;
+    }
+    const fmt=0b111011111000100; // L, máscara 0
+    const fbits=[];for(let i=14;i>=0;i--)fbits.push((fmt>>i)&1);
+    const fpos1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+    fpos1.forEach((p,i)=>{m[p[0]][p[1]]=!!fbits[i];});
+    const fpos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+    fpos2.forEach((p,i)=>{m[p[0]][p[1]]=!!fbits[i];});
+    if(ver>=7){const vi=VERINFO[ver];
+      for(let i=0;i<18;i++){const bit=(vi>>i)&1, a=size-11+(i%3), b=Math.floor(i/3);
+        m[a][b]=!!bit; m[b][a]=!!bit;}
+    }
+    return m;
+  }
+  return {build};
+})();
+function drawQR(canvas, text){
+  try{
+    const m=QR.build(text);
+    const n=m.length, q=2, scale=4, dim=(n+q*2)*scale;
+    canvas.width=dim; canvas.height=dim;
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,dim,dim);
+    ctx.fillStyle='#063';
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(m[r][c])ctx.fillRect((c+q)*scale,(r+q)*scale,scale,scale);
+    canvas.style.display='block';
+  }catch(e){ canvas.style.display='none'; }
+}
+
+/* file input para sneakernet */
+document.getElementById('impFile').addEventListener('change',e=>{ if(e.target.files[0]) toast('Archivo cargado, pulsa Importar'); });
+
+/* ---------- Arranque ---------- */
+(async function init(){
+  if(!window.crypto||!crypto.subtle){ document.body.innerHTML='<p style="padding:20px">Este navegador no soporta WebCrypto. Usa Chrome/Edge/Firefox actual sobre https o archivo local.</p>'; return; }
+  await loadOrCreateIdentity();
+  initBroadcast();
+  renderIdentity(); renderContacts(); renderConvos(); updateStats();
+  setInterval(()=>{ updateStats(); transports.filter(t=>t.isLive()).forEach(flushTo); }, 8000);
+})();
+</script>
+</body>
+</html>
